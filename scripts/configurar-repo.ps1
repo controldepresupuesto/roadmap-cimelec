@@ -70,9 +70,9 @@ for ($i = 0; $i -lt 6; $i++) {
 Write-Host ''
 Write-Host '  Cerrando lo que no se usa...' -ForegroundColor Cyan
 
-# Sin wiki, sin proyectos clasicos dentro del repo (el tablero es un Project de la cuenta)
-gh api -X PATCH "repos/$REPO" -F has_wiki=false -F has_projects=false 2>&1 | Out-Null
-if ($?) { Write-Host '  wiki y proyectos clasicos: apagados' -ForegroundColor DarkGray }
+# Sin wiki. La pestana Projects SI se queda: es donde vive el tablero y el README apunta ahi.
+gh api -X PATCH "repos/$REPO" -F has_wiki=false -F has_projects=true 2>&1 | Out-Null
+if ($?) { Write-Host '  wiki apagada, pestana Projects encendida' -ForegroundColor DarkGray }
 
 # Solo colaboradores escriben. CADUCA A LOS 6 MESES: hay que volver a correr esto.
 # El respaldo permanente es .github/workflows/solo-equipo.yml, que no caduca.

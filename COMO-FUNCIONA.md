@@ -76,3 +76,47 @@ Esto lo lee gente de obra y de contabilidad, no de sistemas.
 El flujo `.github/workflows/solo-equipo.yml` le responde, cierra y bloquea. No hay que
 hacer nada. Si es alguien del equipo que aún no está invitado, invítalo como
 **colaborador con rol Triage** (puede abrir y clasificar, no puede tocar el contenido).
+
+---
+
+## Los scripts
+
+Todos viven en `scripts/`. Los tres con `.bat` en la raíz se corren con doble clic.
+
+| Script | Cuándo se corre | Qué hace |
+|---|---|---|
+| `configurar-repo.ps1` | Una vez, y cada 6 meses | Etiquetas, hitos, apaga la wiki y limita la escritura al equipo |
+| `crear-tablero.ps1` | **Una sola vez** | Crea el tablero con sus campos, lo hace público y le mete las solicitudes |
+| `nueva-solicitud.ps1` | Cada vez que llega algo por WhatsApp o correo | Registra la solicitud y devuelve el enlace |
+| `publicar-actualizacion.ps1` | Cada vez que sale algo a producción | Entrada en el CHANGELOG + Release |
+
+### El permiso de tableros
+
+`crear-tablero.ps1` necesita un permiso que `gh` no trae por defecto. Una sola vez:
+
+```
+gh auth refresh -s project
+```
+
+Abre el navegador, confirmas y queda. Sin eso, GitHub no deja crear ni modificar tableros
+desde la línea de comandos.
+
+### Las dos cosas que GitHub no deja automatizar
+
+1. **Las vistas del tablero** (Tablero y Hoja de ruta). Se crean con unos clics en la web,
+   una sola vez. El script imprime los pasos exactos al terminar.
+2. **Poner una solicitud nueva en el tablero.** `nueva-solicitud.ps1` crea la solicitud pero
+   no la agrega al tablero. Se arrastra a mano, o se activa el flujo automático del propio
+   tablero: en el tablero → `⋯` → *Workflows* → **Item added to project** → activarlo, y
+   además **Auto-add to project** con el filtro `is:issue is:open repo:roadmap-cimelec`.
+
+### El límite de escritura caduca
+
+El candado que impide que un tercero escriba tiene dos capas:
+
+- **Interaction limit** de GitHub: efectivo, pero **caduca a los 6 meses**. Se renueva
+  volviendo a correr `configurar-repo.ps1`.
+- **`.github/workflows/solo-equipo.yml`**: no caduca. Si alguien de afuera escribe, le
+  responde, cierra y bloquea el hilo.
+
+La primera es la que evita el ruido; la segunda es la que garantiza que nunca queda abierto.

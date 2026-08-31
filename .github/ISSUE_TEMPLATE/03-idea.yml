@@ -1,0 +1,37 @@
+name: "💡 Proponer una idea"
+description: Algo nuevo que no existe todavía. Una herramienta, un informe, un automatismo.
+title: "[Idea] "
+labels: ["tipo: idea", "estado: idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Las ideas se registran todas. No todas se hacen, pero ninguna se pierde:
+        si se decide no hacerla, queda escrito el motivo.
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: ¿Qué se te ocurrió?
+    validations:
+      required: true
+
+  - type: textarea
+    id: problema
+    attributes:
+      label: ¿Qué problema resolvería?
+      description: Es la parte que más pesa a la hora de priorizar.
+    validations:
+      required: true
+
+  - type: textarea
+    id: como_se_hace_hoy
+    attributes:
+      label: ¿Cómo se resuelve hoy sin eso?
+      placeholder: "A mano en un Excel que armamos cada mes."
+
+  - type: input
+    id: cuanto_tiempo
+    attributes:
+      label: ¿Cuánto tiempo se ahorraría?
+      placeholder: "Como dos días al mes entre dos personas"

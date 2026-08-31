@@ -1,0 +1,56 @@
+# Mantiene el repositorio en SOLO LECTURA para terceros, de forma permanente.
+#
+# Los "interaction limits" de GitHub sirven para lo mismo pero caducan (máximo 6 meses)
+# y hay que renovarlos a mano. Este flujo no caduca: si alguien de afuera abre una
+# solicitud o comenta, se responde con una nota, se cierra y se bloquea el hilo.
+#
+# Pasa sin tocar nada: OWNER (dueño), MEMBER (organización) y COLLABORATOR (invitado).
+
+name: Solo el equipo escribe
+
+on:
+  issues:
+    types: [opened, reopened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+
+jobs:
+  filtrar:
+    runs-on: ubuntu-latest
+    if: >
+      github.event.sender.type != 'Bot' &&
+      !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
+                github.event.issue.author_association)
+    steps:
+      - name: Cerrar y bloquear
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const numero = context.payload.issue.number;
+            const repo = { owner: context.repo.owner, repo: context.repo.repo };
+
+            const nota = [
+              'Gracias por escribir. 🙏',
+              '',
+              'Este repositorio es **público para consulta**, pero está cerrado a escritura de',
+              'terceros: solo el equipo interno de CIMELEC INGENIEROS abre y comenta solicitudes.',
+              '',
+              'Si trabajas en el grupo, pide acceso al área de control de presupuesto o manda tu',
+              'solicitud por WhatsApp o correo: se registra aquí igual y te devolvemos el enlace',
+              'para seguirla.',
+              '',
+              'Si no trabajas en el grupo, siéntete libre de mirar el tablero y el historial de',
+              'versiones — para eso está publicado.',
+              '',
+              '<sub>Cerrado automáticamente.</sub>',
+            ].join('\n');
+
+            await github.rest.issues.createComment({ ...repo, issue_number: numero, body: nota });
+
+            if (context.eventName === 'issues') {
+              await github.rest.issues.update({ ...repo, issue_number: numero, state: 'closed', state_reason: 'not_planned' });
+            }
+            await github.rest.issues.lock({ ...repo, issue_number: numero, lock_reason: 'off-topic' });

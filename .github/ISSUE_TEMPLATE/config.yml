@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: No tengo cuenta de GitHub
+    url: https://github.com/controldepresupuesto/roadmap-cimelec#cómo-pedir-un-cambio
+    about: Pídelo por WhatsApp o correo al área de control de presupuesto. Se registra aquí igual y te devolvemos el enlace para seguirlo.
+  - name: Necesito ayuda para usar una herramienta
+    url: https://github.com/controldepresupuesto/roadmap-cimelec#las-herramientas
+    about: Esto no es soporte. Para dudas de uso, escribe al área de control de presupuesto.

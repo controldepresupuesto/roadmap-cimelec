@@ -1,0 +1,24 @@
+# Secretos — nunca
+.env
+*.ini
+!*.ini.ejemplo
+*.key
+*.pem
+*.ppk
+credential*
+*secret*
+
+# Documentos de la empresa (datos personales) — este repo es PÚBLICO
+*.pdf
+*.docx
+*.xlsx
+*.pbix
+*.db
+*.sqlite
+
+# Temporales
+_borrador*
+*.log
+Thumbs.db
+desktop.ini
+.DS_Store

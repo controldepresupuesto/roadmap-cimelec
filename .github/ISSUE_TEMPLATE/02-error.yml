@@ -1,0 +1,89 @@
+name: "🐞 Reportar un error"
+description: Algo que no funciona, muestra un dato equivocado o se cae.
+title: "[Error] "
+labels: ["tipo: error", "estado: en analisis"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Con que se entienda **qué hacías, qué esperabas y qué pasó** es suficiente.
+
+  - type: dropdown
+    id: herramienta
+    attributes:
+      label: ¿En qué herramienta?
+      options:
+        - Tablero DataMart
+        - Bitácora de Obra
+        - Registro de Horarios
+        - Portal de Proveedores
+        - Gestión de Proyectos
+        - Biblioteca de Informes
+        - Consulta Geográfica
+        - Asistente de consulta (WhatsApp)
+        - Menú de entrada
+        - Otra / no sé
+    validations:
+      required: true
+
+  - type: textarea
+    id: que_hacias
+    attributes:
+      label: ¿Qué estabas haciendo?
+      description: Los pasos, aunque sean obvios.
+      placeholder: |
+        1. Entré al tablero de Compras
+        2. Filtré por el proyecto IDU 1760
+        3. Le di a la pestaña de Órdenes de Compra
+    validations:
+      required: true
+
+  - type: textarea
+    id: que_esperabas
+    attributes:
+      label: ¿Qué esperabas ver?
+    validations:
+      required: true
+
+  - type: textarea
+    id: que_paso
+    attributes:
+      label: ¿Qué pasó en realidad?
+      description: Si hay una cifra mala, escribe la que salió y la que debería salir.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: bloquea
+    attributes:
+      label: ¿Te bloquea el trabajo?
+      options:
+        - "Sí, no puedo seguir"
+        - "Puedo seguir pero con trabajo extra"
+        - "Es un detalle, no me bloquea"
+    validations:
+      required: true
+
+  - type: input
+    id: cuando
+    attributes:
+      label: ¿Cuándo lo viste?
+      placeholder: "Hoy 31 de agosto a las 9 am"
+
+  - type: dropdown
+    id: donde
+    attributes:
+      label: ¿Desde dónde?
+      options:
+        - Computador
+        - Celular
+        - Tablet
+        - No sé
+    validations:
+      required: true
+
+  - type: textarea
+    id: pantallazo
+    attributes:
+      label: Pantallazo
+      description: Arrastra la imagen aquí. Tapa lo que sea confidencial.

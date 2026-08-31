@@ -1,0 +1,69 @@
+name: "✨ Pedir una mejora"
+description: Algo que ya funciona pero podría funcionar mejor, o algo que hace falta.
+title: "[Mejora] "
+labels: ["tipo: mejora", "estado: idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Escríbelo con tus palabras. No hace falta lenguaje técnico.
+
+  - type: dropdown
+    id: herramienta
+    attributes:
+      label: ¿En qué herramienta?
+      options:
+        - Tablero DataMart
+        - Bitácora de Obra
+        - Registro de Horarios
+        - Portal de Proveedores
+        - Gestión de Proyectos
+        - Biblioteca de Informes
+        - Consulta Geográfica
+        - Asistente de consulta (WhatsApp)
+        - Menú de entrada
+        - Otra / no sé
+    validations:
+      required: true
+
+  - type: textarea
+    id: que_pasa_hoy
+    attributes:
+      label: ¿Qué pasa hoy?
+      description: Cómo lo haces actualmente y qué te cuesta.
+      placeholder: "Hoy para saber cuánto llevo facturado tengo que abrir tres pantallas y sumarlas a mano."
+    validations:
+      required: true
+
+  - type: textarea
+    id: que_quisieras
+    attributes:
+      label: ¿Qué quisieras que pasara?
+      placeholder: "Que en la pantalla de avance saliera el total facturado del mes."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: cuanta_gente
+    attributes:
+      label: ¿A cuánta gente le sirve?
+      options:
+        - Solo a mí
+        - A mi área
+        - A varias áreas
+        - A toda la empresa
+        - No sé
+    validations:
+      required: true
+
+  - type: input
+    id: cada_cuanto
+    attributes:
+      label: ¿Cada cuánto te toca hacer esto?
+      placeholder: "Todos los días / una vez al mes / cada cierre"
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Algo más
+      description: Pantallazos, un ejemplo con datos reales, o el nombre del proyecto donde se ve.

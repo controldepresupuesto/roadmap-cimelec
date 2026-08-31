@@ -51,7 +51,7 @@ foreach ($e in $etiquetas) {
 }
 
 # Las etiquetas por defecto de GitHub no aplican aqui
-foreach ($v in @('bug','documentation','duplicate','enhancement','good first issue','help wanted','invalid','question','wontfix')) {
+foreach ($v in @('bug','documentation','duplicate','enhancement','good first issue','help wanted','invalid','question','wontfix','accessibility')) {
   gh label delete $v --repo $REPO --yes 2>&1 | Out-Null
 }
 

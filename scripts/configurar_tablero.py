@@ -57,17 +57,29 @@ TRIMESTRES_HASTA = datetime.date(2029, 1, 1)
 # porque ahi el color es un hex libre — ver configurar-repo.ps1.
 #   (nombre, etiqueta, color del tablero, nombre anterior de la opcion, descripcion)
 HERRAMIENTAS = [
-    ("Tablero DataMart",       "app: datamart",    "BLUE",   "Tablero DataMart",       "Indicadores del ERP"),
-    ("Bitácora de Obra",       "app: bitacora",    "ORANGE", "Bitacora de Obra",       "Informes diarios de obra"),
-    ("Registro de Horarios",   "app: horarios",    "PURPLE", "Registro de Horarios",   "Asistencia y novedades"),
-    ("Portal de Proveedores",  "app: proveedores", "PINK",   "Portal de Proveedores",  "Alta de proveedores"),
-    ("Gestión de Proyectos",   "app: proyectos",   "YELLOW", "Gestion de Proyectos",   "Seguimiento de proyectos"),
-    ("Biblioteca de Informes", "app: biblioteca",  "GREEN",  "Biblioteca de Informes", "Informes publicados"),
-    ("Consulta Geográfica",    "app: geo",         "GREEN",  "Consulta Geografica",    "Malla vial de Bogotá"),
-    ("Asistente",              "app: asistente",   "GRAY",   "Asistente",              "Consultas por WhatsApp"),
-    ("Menú de entrada",        "app: menu",        "GRAY",   "Menu de entrada",        "Acceso a las herramientas"),
-    ("Plataforma",             "app: plataforma",  "RED",    "Plataforma",             "Afecta a varias herramientas"),
+    ("📊 Tablero DataMart",       "app: datamart",    "BLUE",   "Tablero DataMart",       "Indicadores del ERP"),
+    ("📓 Bitácora de Obra",       "app: bitacora",    "ORANGE", "Bitácora de Obra",       "Informes diarios de obra"),
+    ("⏰ Registro de Horarios",   "app: horarios",    "PURPLE", "Registro de Horarios",   "Asistencia y novedades"),
+    ("🚚 Portal de Proveedores",  "app: proveedores", "PINK",   "Portal de Proveedores",  "Alta de proveedores"),
+    ("📋 Gestión de Proyectos",   "app: proyectos",   "YELLOW", "Gestión de Proyectos",   "Seguimiento de proyectos"),
+    ("📚 Biblioteca de Informes", "app: biblioteca",  "GREEN",  "Biblioteca de Informes", "Informes publicados"),
+    ("🌎 Consulta Geográfica",    "app: geo",         "GREEN",  "Consulta Geográfica",    "Malla vial de Bogotá"),
+    ("💬 Asistente",              "app: asistente",   "GRAY",   "Asistente",              "Consultas por WhatsApp"),
+    ("🏠 Menú de entrada",        "app: menu",        "GRAY",   "Menú de entrada",        "Acceso a las herramientas"),
+    ("🔧 Plataforma",             "app: plataforma",  "RED",    "Plataforma",             "Afecta a varias herramientas"),
 ]
+
+# Que se ve en cada tarjeta / fila. SIN esto las tarjetas solo traen titulo y repositorio, y
+# no hay forma de saber de un vistazo si algo es de Bitacora o de Horarios.
+# En el modelo de Sincosoft las tarjetas llevan Labels y Periodo; aqui va ademas Herramienta,
+# que es la que trae el color y el icono de la app.
+CAMPOS_POR_VISTA = {
+    "General":      ["Title", "Herramienta", "Status", "Prioridad", "Periodo", "Labels"],
+    "Por estado":   ["Title", "Herramienta", "Prioridad", "Periodo"],
+    "Hoja de ruta": ["Title", "Herramienta", "Status", "Periodo"],
+}
+# Las vistas de una sola app no repiten Herramienta: la pestana entera ya es esa app.
+CAMPOS_VISTA_APP = ["Title", "Status", "Prioridad", "Periodo", "Labels"]
 
 
 def gh(args, entrada=None):
@@ -306,6 +318,43 @@ def main():
         print("  Sin pestana propia porque todavia no tienen solicitudes:")
         print("      %s" % ", ".join(saltadas))
         print("  (vuelve a correr este script cuando las tengan)")
+
+    # -------------------------------------- 5. que campos se ven en cada tarjeta ----
+    # Se vuelve a leer las vistas: las que se acabaron de crear no estan en el mapa inicial.
+    fresco = gql("""
+    query($d:String!){ user(login:$d){ projectV2(number:%d){
+      views(first:40){ nodes{ id name layout } }
+      fields(first:50){ nodes{ ... on ProjectV2FieldCommon { id name } } } } } }
+    """ % NUMERO_TABLERO, d=DUENO)["user"]["projectV2"]
+    frescas = fresco["views"]["nodes"]
+    for n in fresco["fields"]["nodes"]:
+        if n and n.get("name") and n["name"] not in campos:
+            campos[n["name"]] = {"id": n["id"]}
+
+    nombres_app = {h[0] for h in HERRAMIENTAS}
+    print()
+    print("  Campos visibles en cada vista:")
+    for v in frescas:
+        # La vista Roadmap no acepta campos visibles: "Roadmap views do not support
+        # visible fields". Se salta por tipo, no por nombre.
+        if v["layout"] == "ROADMAP_LAYOUT":
+            print("      %-24s (Roadmap: GitHub no permite elegir campos)" % v["name"])
+            continue
+        quiere = CAMPOS_POR_VISTA.get(v["name"])
+        if quiere is None:
+            quiere = CAMPOS_VISTA_APP if v["name"] in nombres_app else None
+        if not quiere:
+            continue
+        ids = [campos[n]["id"] for n in quiere if n in campos]
+        gql("""
+        mutation {
+          updateProjectV2View(input:{
+            viewId: "%s"
+            configuration: { visibleFieldIds: [%s] }
+          }){ projectV2View { name } }
+        }
+        """ % (v["id"], ", ".join('"%s"' % i for i in ids)))
+        print("      %-24s %s" % (v["name"], " · ".join(quiere)))
 
     print()
     print("  %s" % t["url"])

@@ -23,7 +23,7 @@ golpe:
 | Campo | Qué dice |
 |---|---|
 | **Status** | En qué va, de *en evaluación* a *publicado* — la tabla completa más abajo |
-| **Herramienta** | A qué app pertenece |
+| **Herramienta** | A qué app pertenece — cada una con su icono y su color, para reconocerla sin leer |
 | **Prioridad** | Alta, media o baja — la fija la dirección, no el orden de llegada |
 | **Periodo** | En qué trimestre está previsto |
 
@@ -33,6 +33,16 @@ Arriba del tablero hay pestañas para verlo de varias formas:
 - **Por estado** — columnas por etapa: qué está en desarrollo hoy, qué está en pruebas
 - **Hoja de ruta** — línea de tiempo por trimestre
 - **Una pestaña por herramienta** — solo lo de esa app
+
+Cada app tiene icono y color propios, y se repiten en todas las vistas:
+
+| | App | | App |
+|---|---|---|---|
+| 📊 | Tablero DataMart | 📚 | Biblioteca de Informes |
+| 📓 | Bitácora de Obra | 🌎 | Consulta Geográfica |
+| ⏰ | Registro de Horarios | 💬 | Asistente |
+| 🚚 | Portal de Proveedores | 🏠 | Menú de entrada |
+| 📋 | Gestión de Proyectos | 🔧 | Plataforma (varias a la vez) |
 
 ---
 

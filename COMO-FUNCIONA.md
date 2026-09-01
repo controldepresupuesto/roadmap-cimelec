@@ -106,6 +106,26 @@ Todos viven en `scripts/`. Los tres con `.bat` en la raíz se corren con doble c
 | `configurar_tablero.py` | Al cambiar estados, o al añadir una herramienta | Estados, campo `Periodo` con sus trimestres, y las vistas. Repetible |
 | `auditar_etiquetas.py` | Solo, con cada sincronización | Falla si el vocabulario se degrada: dos estados a la vez, una etiqueta que el mapa no conoce |
 | `vigilante_roadmap.py` | Solo, los lunes a las 8:30 | Revisa que el roadmap no se esté podriendo. Avisa en el escritorio **solo** si hay algo que exige acción |
+| `proponer_desde_commits.py` | Solo, los lunes | Lee lo que se construyó y propone qué falta contar en el roadmap |
+
+### Cómo entra lo que se construye, sin que nadie lo apunte
+
+El registro de lo que se hizo **ya existe**: son los commits de los repositorios. Los escribió
+quien hizo el trabajo, están fechados, y no dependen de que alguien se acuerde de anotar nada.
+
+`proponer_desde_commits.py` los lee y los reparte en tres cajones:
+
+| Cajón | Qué cae ahí |
+|---|---|
+| **Probablemente sí** | Cambios que un usuario notaría. Van a `_PROPUESTAS-ROADMAP.md` con una casilla |
+| **Probablemente no** | Despliegues, notas, versiones. Se listan aparte, por si acaso |
+| **Nunca** | Infraestructura, pruebas, credenciales. Solo se cuentan — la regla del repositorio público los excluye por definición |
+
+**No publica nada.** Marca en el archivo lo que quieras que entre, dímelo, y lo redacto en
+lenguaje de negocio y lo cargo. Capturar es lo que se olvida; revisar son treinta segundos.
+
+Se descartó hacerlo con un *hook* de la sesión: capturaría menos que los commits, añadiría peso
+a cada sesión, no funcionaría hacia atrás, y dependería de que la sesión terminara bien.
 
 ### Lo que corre solo, sin que nadie lo pida
 

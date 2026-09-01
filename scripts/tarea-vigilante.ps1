@@ -32,6 +32,11 @@ function Avisar($titulo, $texto) {
 & python (Join-Path $RAIZ 'scripts\vigilante_roadmap.py') | Out-Null
 $codigo = $LASTEXITCODE
 
+# Lo que se construyo y todavia no esta contado en el roadmap. Sale del historial de los
+# repositorios, que es el registro fiable de lo que se hizo. No publica nada: deja la lista.
+& python (Join-Path $RAIZ 'scripts\proponer_desde_commits.py') | Out-Null
+$porContar = $LASTEXITCODE   # 1 = hay candidatos
+
 $avisoPath = Join-Path $RAIZ '_VIGILANTE-AVISO.txt'
 $aviso = ''
 if (Test-Path $avisoPath) { $aviso = (Get-Content $avisoPath -Raw -Encoding UTF8).Trim() }
@@ -41,9 +46,17 @@ if ($codigo -eq 2) {
 }
 elseif ($codigo -eq 1 -and $aviso) {
   # Se corta para que quepa en el globo de Windows
-  if ($aviso.Length -gt 220) { $aviso = $aviso.Substring(0, 217) + '...' }
-  Avisar 'Roadmap CIMELEC - hay algo pendiente' ($aviso + "`n`nEl detalle esta en _VIGILANTE-ROADMAP.txt")
+  if ($aviso.Length -gt 200) { $aviso = $aviso.Substring(0, 197) + '...' }
+  $extra = ''
+  if ($porContar -eq 1) { $extra = "`nY hay cambios construidos sin contar: _PROPUESTAS-ROADMAP.md" }
+  Avisar 'Roadmap CIMELEC - hay algo pendiente' ($aviso + "`n`nDetalle en _VIGILANTE-ROADMAP.txt" + $extra)
 }
-# Si no hay nada que exija accion, no molesta. El informe queda escrito igual.
+elseif ($porContar -eq 1) {
+  Avisar 'Roadmap CIMELEC - hay cambios sin contar' `
+    ("Se construyeron cosas que no estan en la hoja de ruta.`n`n" +
+     "La lista esta en _PROPUESTAS-ROADMAP.md. Nada se publico: marca lo que quieras que entre.")
+}
+# Si no hay nada que exija accion ni nada por contar, no molesta.
+# El informe y la lista quedan escritos igual.
 
 exit 0

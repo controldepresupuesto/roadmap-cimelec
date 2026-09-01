@@ -1,0 +1,76 @@
+# Mantiene el tablero al dia SIN que nadie corra nada.
+#
+# Cada vez que se abre, cierra, reabre o se le cambia una etiqueta a una solicitud, este flujo
+# corre el sincronizador y proyecta las etiquetas sobre los campos del tablero. Es lo que
+# reemplaza el doble clic en SINCRONIZAR-TABLERO.bat.
+#
+# POR QUE HACE FALTA UN TOKEN APARTE
+# El GITHUB_TOKEN que Actions entrega solo no sirve: la documentacion de GitHub dice
+# textualmente que "GITHUB_TOKEN is scoped to the repository level and cannot access
+# Projects v2". Y como este tablero es de una CUENTA PERSONAL (no de una organizacion), ni una
+# GitHub App ni un token de grano fino tienen permiso para escribirlo — la union GraphQL
+# ProjectV2Actor solo admite Team y User, nunca un bot. El unico camino es un PAT clasico.
+#
+# EL TOKEN
+#   - Scope: UNICAMENTE 'project'. NO poner 'repo'. Con solo 'project', si el token se filtrara,
+#     alguien desordena tableros; con 'repo' abriria los nueve repositorios privados.
+#   - Caducidad: "No expiration". Asi no hay nada que renovar nunca. GitHub solo revoca por
+#     desuso al año, y este flujo lo usa con cada cambio de etiqueta.
+#   - Vive en el environment 'tablero', NO en los secretos del repositorio. Esto no es
+#     cosmetico: solo-equipo.yml se dispara con pull_request_target, que SI puede leer los
+#     secretos del repositorio. Un secreto de environment solo lo ve el job que declara ese
+#     environment, y este es el unico que lo declara.
+#
+# SIN CRON A PROPOSITO
+# Un 'schedule' en un repositorio PUBLICO se desactiva solo a los 60 dias sin actividad, en
+# silencio. Seria un vigilante que muere justo en el escenario de abandono que deberia detectar.
+# Para eso esta el vigilante externo, fuera de Actions.
+
+name: Sincronizar el tablero
+
+on:
+  issues:
+    types: [opened, reopened, closed, labeled, unlabeled, edited, transferred]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Si se cambian tres etiquetas seguidas, no queremos tres corridas pisandose.
+concurrency:
+  group: tablero
+  cancel-in-progress: false
+
+jobs:
+  sincronizar:
+    runs-on: ubuntu-latest
+    environment: tablero
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Comprobar que el token esta puesto
+        env:
+          PAT: ${{ secrets.PAT_TABLERO }}
+        run: |
+          if [ -z "$PAT" ]; then
+            echo "::error::Falta el secreto PAT_TABLERO en el environment 'tablero'."
+            echo "Crealo asi, una sola vez:"
+            echo "  1. github.com/settings/tokens  ->  Generate new token (classic)"
+            echo "  2. Nombre: tablero-roadmap · Expiration: No expiration · marca SOLO 'project'"
+            echo "  3. gh secret set PAT_TABLERO --repo controldepresupuesto/roadmap-cimelec --env tablero"
+            exit 1
+          fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Proyectar las etiquetas sobre el tablero
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TABLERO }}
+        run: python scripts/sincronizar_tablero.py
+
+      - name: Auditar el vocabulario de etiquetas
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TABLERO }}
+        run: python scripts/auditar_etiquetas.py

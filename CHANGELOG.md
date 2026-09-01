@@ -7,6 +7,14 @@ Formato de cada entrada: **✨ Nuevo** · **🔧 Mejorado** · **🐞 Corregido*
 
 ---
 
+## 2026-09-01
+
+**Menú de entrada**
+- ✨ Tarjeta **Hoja de ruta** en el grupo *Sitio público*: desde el menú se puede ver en qué va
+  cada desarrollo. Se abre sin cuenta.
+
+---
+
 ## 2026-08-31
 
 **Menú de entrada**

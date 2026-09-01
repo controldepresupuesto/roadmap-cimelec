@@ -42,14 +42,14 @@ MAPA = {
     },
     "Herramienta": {
         "app: datamart": "Tablero DataMart",
-        "app: bitacora": "Bitacora de Obra",
+        "app: bitacora": "Bitácora de Obra",
         "app: horarios": "Registro de Horarios",
         "app: proveedores": "Portal de Proveedores",
-        "app: proyectos": "Gestion de Proyectos",
+        "app: proyectos": "Gestión de Proyectos",
         "app: biblioteca": "Biblioteca de Informes",
-        "app: geo": "Consulta Geografica",
+        "app: geo": "Consulta Geográfica",
         "app: asistente": "Asistente",
-        "app: menu": "Menu de entrada",
+        "app: menu": "Menú de entrada",
         "app: plataforma": "Plataforma",
     },
     "Prioridad": {

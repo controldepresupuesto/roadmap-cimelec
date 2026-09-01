@@ -33,6 +33,8 @@ DUENO = "controldepresupuesto"
 NUMERO_TABLERO = 1
 REPO = "controldepresupuesto/roadmap-cimelec"
 
+SALTO = "\n          "   # solo para que las mutaciones queden legibles al depurarlas
+
 # Los estados, en el orden en que se leen en el tablero.
 # 'antes' es el nombre que tenia la opcion, para conservar lo ya asignado al renombrarla.
 ESTADOS = [
@@ -49,17 +51,22 @@ ESTADOS = [
 TRIMESTRES_DESDE = datetime.date(2026, 7, 1)
 TRIMESTRES_HASTA = datetime.date(2029, 1, 1)
 
+# Cada app con su color. Ojo: la paleta de un campo de tablero tiene solo OCHO colores
+# (GRAY BLUE GREEN YELLOW ORANGE RED PINK PURPLE) y hay diez herramientas, asi que dos
+# parejas comparten color. En las ETIQUETAS del repo si hay un color distinto para cada una,
+# porque ahi el color es un hex libre — ver configurar-repo.ps1.
+#   (nombre, etiqueta, color del tablero, nombre anterior de la opcion, descripcion)
 HERRAMIENTAS = [
-    ("Tablero DataMart",       "app: datamart"),
-    ("Bitacora de Obra",       "app: bitacora"),
-    ("Registro de Horarios",   "app: horarios"),
-    ("Portal de Proveedores",  "app: proveedores"),
-    ("Gestion de Proyectos",   "app: proyectos"),
-    ("Biblioteca de Informes", "app: biblioteca"),
-    ("Consulta Geografica",    "app: geo"),
-    ("Asistente",              "app: asistente"),
-    ("Menu de entrada",        "app: menu"),
-    ("Plataforma",             "app: plataforma"),
+    ("Tablero DataMart",       "app: datamart",    "BLUE",   "Tablero DataMart",       "Indicadores del ERP"),
+    ("Bitácora de Obra",       "app: bitacora",    "ORANGE", "Bitacora de Obra",       "Informes diarios de obra"),
+    ("Registro de Horarios",   "app: horarios",    "PURPLE", "Registro de Horarios",   "Asistencia y novedades"),
+    ("Portal de Proveedores",  "app: proveedores", "PINK",   "Portal de Proveedores",  "Alta de proveedores"),
+    ("Gestión de Proyectos",   "app: proyectos",   "YELLOW", "Gestion de Proyectos",   "Seguimiento de proyectos"),
+    ("Biblioteca de Informes", "app: biblioteca",  "GREEN",  "Biblioteca de Informes", "Informes publicados"),
+    ("Consulta Geográfica",    "app: geo",         "GREEN",  "Consulta Geografica",    "Malla vial de Bogotá"),
+    ("Asistente",              "app: asistente",   "GRAY",   "Asistente",              "Consultas por WhatsApp"),
+    ("Menú de entrada",        "app: menu",        "GRAY",   "Menu de entrada",        "Acceso a las herramientas"),
+    ("Plataforma",             "app: plataforma",  "RED",    "Plataforma",             "Afecta a varias herramientas"),
 ]
 
 
@@ -144,7 +151,10 @@ def main():
     opciones = []
     conservadas = 0
     for nombre, color, desc, antes in ESTADOS:
-        oid = previas.get(antes) if antes else None
+        # Primero por el nombre actual, y solo si no esta, por el anterior. Al reves, un
+        # cambio de nombre (ponerle un acento, por ejemplo) crea una opcion NUEVA y los
+        # items que la tenian asignada se quedan en blanco.
+        oid = previas.get(nombre) or (previas.get(antes) if antes else None)
         if oid:
             conservadas += 1
             opciones.append('{ id: "%s", name: "%s", color: %s, description: "%s" }'
@@ -165,6 +175,32 @@ def main():
     print("  Estados (%d, %d renombradas conservando lo asignado):" % (len(nombres), conservadas))
     for n in nombres:
         print("      %s" % n)
+
+    # ------------------------------------------- 1b. el campo Herramienta, con color ----
+    hr = campos.get("Herramienta")
+    if hr:
+        prev = {o["name"]: o["id"] for o in hr.get("options", [])}
+        ops = []
+        for nombre, _et, color, antes, desc in HERRAMIENTAS:
+            oid = prev.get(nombre) or prev.get(antes)
+            if oid:
+                ops.append('{ id: "%s", name: "%s", color: %s, description: "%s" }'
+                           % (oid, nombre, color, desc))
+            else:
+                ops.append('{ name: "%s", color: %s, description: "%s" }'
+                           % (nombre, color, desc))
+        r = gql("""
+        mutation {
+          updateProjectV2Field(input:{
+            fieldId: "%s"
+            singleSelectOptions: [ %s ]
+          }){ projectV2Field { ... on ProjectV2SingleSelectField { options { name color } } } }
+        }
+        """ % (hr["id"], SALTO.join(ops)))
+        print()
+        print("  Herramientas (cada una con su color):")
+        for o in r["updateProjectV2Field"]["projectV2Field"]["options"]:
+            print("      %-24s %s" % (o["name"], o["color"]))
 
     # -------------------------------------------------- 2. el campo de trimestre ----
     tri = trimestres()
@@ -251,11 +287,20 @@ def main():
         for l in i["labels"]:
             con_uso.add(l["name"])
 
-    for nombre, etiqueta in HERRAMIENTAS:
+    for nombre, etiqueta, _c, _a, _d in HERRAMIENTAS:
         if etiqueta in con_uso:
             vista(nombre, "BOARD_LAYOUT", 'label:"%s"' % etiqueta)
 
-    saltadas = [n for n, e in HERRAMIENTAS if e not in con_uso]
+    # Vistas sobrantes: quedan cuando una herramienta se renombra (por ejemplo al ponerle
+    # el acento) y la vista vieja no se borra. Sin esto el tablero acumula pestanas muertas.
+    legitimas = {"General", "Por estado", "Hoja de ruta"} | {h[0] for h in HERRAMIENTAS}
+    for nombre, v in vistas.items():
+        if nombre not in legitimas:
+            gql("""mutation { deleteProjectV2View(input:{viewId:"%s"}){ clientMutationId } }"""
+                % v["id"])
+            print("      - %-24s sobrante, borrada" % nombre)
+
+    saltadas = [h[0] for h in HERRAMIENTAS if h[1] not in con_uso]
     if saltadas:
         print()
         print("  Sin pestana propia porque todavia no tienen solicitudes:")

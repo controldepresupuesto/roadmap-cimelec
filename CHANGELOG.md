@@ -19,14 +19,43 @@ Formato de cada entrada: **✨ Nuevo** · **🔧 Mejorado** · **🐞 Corregido*
   y se dice en qué localidad y UPL cae una coordenada.
 
 **Registro de Horarios**
-- 🔧 El botón **Editar** ahora abre exactamente el registro que estabas viendo, sin tener que volver a filtrar.
+- 🐞 El encabezado parpadeaba al cambiar de pantalla. Ya no.
+- 🔧 La app dice en qué versión está, para poder reportar un problema con precisión.
 
 **Administración de la plataforma**
 - ✨ Consola interna para ver y ajustar las cuentas de administrador de cada herramienta, con registro de auditoría.
 
 ---
 
+## 2026-08-29
+
+**Registro de Horarios**
+- 🐞 Un mismo centro de trabajo aparecía dos veces con nombres distintos. Se unieron sin perder
+  la historia de ninguno de los dos.
+- 🔧 Buscar a una persona por su cédula ahora la encuentra.
+
+---
+
 ## 2026-08-28
+
+**Registro de Horarios**
+- ✨ Pestaña **Quién ha entrado**: muestra quién de la nómina nunca ha usado la app, y permite
+  invitar en bloque. Al mirarlo por primera vez, 231 de 260 personas nunca habían entrado.
+
+**Portal de Proveedores**
+- ✨ Tema oscuro.
+- 🔧 El verde de la marca se aclaró para que el texto sobre él se lea de verdad.
+
+**Gestión de Proyectos**
+- ✨ Matriz de interesados.
+- 🐞 Tres cifras del mismo tablero se desmentían entre sí. Corregidas.
+- 🐞 Un proyecto al que le cambiaron el nombre en el ERP se contaba dos veces.
+- 🔧 Todo lo que se toca con el pulgar mide al menos 40 px.
+
+**Tablero DataMart**
+- ✨ Alerta por correo cuando falla una fuente de datos puntual, no solo cuando falla todo el proceso.
+- ✨ Cada cifra y cada filtro del tablero explican qué miden al pasar el mouse. Un revisor
+  automático comprueba que no quede ninguna sin texto.
 
 **Tablero DataMart**
 - ✨ Opción **Tamaño del tablero**: se puede agrandar la letra y la interfaz. Las opciones que no caben
@@ -69,9 +98,9 @@ Formato de cada entrada: **✨ Nuevo** · **🔧 Mejorado** · **🐞 Corregido*
 ## 2026-08-19
 
 **Tablero DataMart**
-- ✨ Alerta por correo cuando falla una fuente de datos puntual, no solo cuando falla todo el proceso.
 - ⚠️ Todo el contenido del tablero exige haber ingresado con usuario y clave, incluidos los
   archivos de datos que alimentan las tablas.
+- 🐞 Filtros que descuadraban el tablero: las órdenes de compra ahora se filtran por orden completa.
 
 ---
 
@@ -86,3 +115,6 @@ Formato de cada entrada: **✨ Nuevo** · **🔧 Mejorado** · **🐞 Corregido*
 ---
 
 <sub>Las entradas anteriores a agosto de 2026 no están publicadas aquí.</sub>
+
+<sub>Cada entrada de este historial está verificada contra el registro de cambios del código. Si
+encuentras algo que no cuadra con lo que viviste, dilo: preferimos corregirlo.</sub>

@@ -104,6 +104,35 @@ Todos viven en `scripts/`. Los tres con `.bat` en la raíz se corren con doble c
 | `crear-tablero.ps1` | **Ya se corrió** (31-ago-2026) | Creó el tablero. No volver a correrlo: crearía un segundo tablero |
 | `sincronizar_tablero.py` | Cada vez que cambias una etiqueta | Copia estado, herramienta y prioridad de las etiquetas al tablero. Repetible |
 | `configurar_tablero.py` | Al cambiar estados, o al añadir una herramienta | Estados, campo `Periodo` con sus trimestres, y las vistas. Repetible |
+| `auditar_etiquetas.py` | Solo, con cada sincronización | Falla si el vocabulario se degrada: dos estados a la vez, una etiqueta que el mapa no conoce |
+| `vigilante_roadmap.py` | Solo, los lunes a las 8:30 | Revisa que el roadmap no se esté podriendo. Avisa en el escritorio **solo** si hay algo que exige acción |
+
+### Lo que corre solo, sin que nadie lo pida
+
+Dos tareas programadas de Windows, con el mismo patrón que las del bot y del panel:
+
+| Tarea | Cuándo | Qué hace |
+|---|---|---|
+| `Roadmap CIMELEC - Sincronizar tablero` | cada 10 min y al iniciar sesión | Proyecta las etiquetas sobre el tablero |
+| `Roadmap CIMELEC - Vigilante` | lunes 8:30 | Revisa que nada se esté podriendo |
+
+Ninguna necesita un token nuevo: usan el `gh` de la máquina, que ya está autorizado.
+
+**Cómo saber si están vivas**, sin entrar a ninguna parte:
+
+| Archivo | Qué dice |
+|---|---|
+| `_estado-sincronizacion.txt` | Se reescribe siempre. Si la fecha se queda vieja, la sincronización murió |
+| `sincronizacion.log` | Solo anota cuando hubo cambios o fallos |
+| `_VIGILANTE-ROADMAP.txt` | El informe del lunes, completo, haya avisado o no |
+
+Ninguno de los cuatro se publica.
+
+**El límite conocido:** las dos dependen de que este computador esté encendido y con la sesión
+abierta. El vigilante lo detecta a sí mismo — si la sincronización lleva más de 3 horas sin correr,
+lo reporta. Y si un lunes no llega ni el aviso ni el informe, el vigilante también está caído.
+La alternativa que no depende de esta máquina es el flujo de GitHub Actions, que está escrito y
+apagado esperando un token.
 | `nueva-solicitud.ps1` | Cada vez que llega algo por WhatsApp o correo | Registra la solicitud y devuelve el enlace |
 | `publicar-actualizacion.ps1` | Cada vez que sale algo a producción | Entrada en el CHANGELOG + Release |
 

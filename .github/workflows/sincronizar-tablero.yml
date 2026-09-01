@@ -28,10 +28,25 @@
 
 name: Sincronizar el tablero
 
+# APAGADO A PROPOSITO, y con un solo disparador manual.
+#
+# Mientras no exista el secreto PAT_TABLERO, cada evento de issue disparaba una corrida que
+# fallaba y mandaba un correo. Diecisiete solicitudes nuevas = diecisiete correos de fallo.
+#
+# Hoy el trabajo lo hace la tarea programada de Windows "Roadmap CIMELEC - Sincronizar tablero"
+# (scripts/tarea-sincronizar.ps1), que usa el gh de la maquina y no necesita ningun token nuevo.
+#
+# PARA ACTIVAR ESTO EN SU LUGAR, el dia que se quiera:
+#   1. Crear el secreto:  gh secret set PAT_TABLERO --repo controldepresupuesto/roadmap-cimelec --env tablero
+#      (PAT clasico, scope UNICAMENTE 'project', "No expiration")
+#   2. Devolver el disparador por eventos, descomentando el bloque de abajo.
+#   3. gh workflow enable "Sincronizar el tablero" --repo controldepresupuesto/roadmap-cimelec
+#   4. Apagar la tarea programada, para que no hagan lo mismo dos veces:
+#      schtasks /change /tn "Roadmap CIMELEC - Sincronizar tablero" /disable
 on:
-  issues:
-    types: [opened, reopened, closed, labeled, unlabeled, edited, transferred]
   workflow_dispatch:
+  # issues:
+  #   types: [opened, reopened, closed, labeled, unlabeled, edited, transferred]
 
 permissions:
   contents: read

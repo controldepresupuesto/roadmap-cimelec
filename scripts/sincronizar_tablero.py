@@ -31,13 +31,14 @@ NUMERO_TABLERO = 1
 # etiqueta -> nombre de la opcion en el tablero
 MAPA = {
     "Status": {
-        "estado: idea": "Idea",
-        "estado: en analisis": "En analisis",
-        "estado: en curso": "En curso",
-        "estado: en prueba": "En prueba",
-        "estado: publicado": "Publicado",
-        "estado: pausado": "Pausado",
-        "estado: no va": "No va",
+        "estado: en evaluacion":    "En evaluación",
+        "estado: en backlog":       "En backlog",
+        "estado: en desarrollo":    "En desarrollo",
+        "estado: en pruebas":       "En pruebas",
+        "estado: en implementacion":"En implementación",
+        "estado: publicado":        "Publicado",
+        "estado: pausado":          "Pausado",
+        "estado: no va":            "No va",
     },
     "Herramienta": {
         "app: datamart": "Tablero DataMart",

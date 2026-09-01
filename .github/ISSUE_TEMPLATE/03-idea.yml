@@ -1,7 +1,7 @@
 name: "💡 Proponer una idea"
 description: Algo nuevo que no existe todavía. Una herramienta, un informe, un automatismo.
 title: "[Idea] "
-labels: ["tipo: idea", "estado: idea"]
+labels: ["tipo: idea", "estado: en evaluacion"]
 body:
   - type: markdown
     attributes:

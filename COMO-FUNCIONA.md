@@ -17,7 +17,7 @@ mantiene solo; sin eso, en un mes está desactualizado y deja de servir.
 | **CHANGELOG.md** | Lo mismo que los Releases, pero en una sola página que se lee de corrido |
 
 **La etiqueta es la fuente de verdad, el tablero es su reflejo.** El estado se cambia en la
-etiqueta del issue (`estado: en curso`) y `SINCRONIZAR-TABLERO.bat` lo copia al campo del
+etiqueta del issue (`estado: en desarrollo`) y `SINCRONIZAR-TABLERO.bat` lo copia al campo del
 tablero. Nunca al revés: si lo cambias solo en el tablero, la siguiente sincronización lo
 devuelve a lo que diga la etiqueta.
 
@@ -37,13 +37,14 @@ Dos rarezas del tablero, por si extrañan:
 1. **Vaciar la bandeja.** Todo lo que llegó por WhatsApp o correo se registra:
    doble clic en `NUEVA-SOLICITUD.bat`.
 2. **Mover lo que se movió.** Cambia la **etiqueta** de estado: lo que empezó pasa a
-   `estado: en curso`; lo que se terminó, a `estado: en prueba`; lo que se publicó, a
+   `estado: en desarrollo`; lo que se terminó, a `estado: en pruebas`; lo que salió pero
+   solo para unas áreas, a `estado: en implementacion`; lo que ya usa todo el mundo, a
    `estado: publicado` y se cierra.
 3. **Reflejarlo en el tablero.** Doble clic en `SINCRONIZAR-TABLERO.bat`. Agrega lo nuevo,
    corrige lo que cambió y no toca lo demás.
-4. **Poner fecha objetivo** a lo que entró en curso, en el tablero. Sin fecha, la vista
-   Hoja de ruta no lo dibuja. (Las fechas son lo único que se escribe en el tablero y no
-   en la etiqueta.)
+4. **Poner el `Periodo`** (el trimestre) a lo que entró en backlog o en desarrollo, en el
+   tablero. Sin `Periodo` la vista Hoja de ruta no lo dibuja. Es lo único que se escribe en
+   el tablero y no en la etiqueta.
 5. **Revisar lo pausado.** Si algo lleva más de dos meses pausado, decide: o vuelve, o
    pasa a `no va` con el motivo escrito.
 
@@ -102,6 +103,7 @@ Todos viven en `scripts/`. Los tres con `.bat` en la raíz se corren con doble c
 | `configurar-repo.ps1` | Una vez, y cada 6 meses | Etiquetas, hitos, apaga la wiki y limita la escritura al equipo |
 | `crear-tablero.ps1` | **Ya se corrió** (31-ago-2026) | Creó el tablero. No volver a correrlo: crearía un segundo tablero |
 | `sincronizar_tablero.py` | Cada vez que cambias una etiqueta | Copia estado, herramienta y prioridad de las etiquetas al tablero. Repetible |
+| `configurar_tablero.py` | Al cambiar estados, o al añadir una herramienta | Estados, campo `Periodo` con sus trimestres, y las vistas. Repetible |
 | `nueva-solicitud.ps1` | Cada vez que llega algo por WhatsApp o correo | Registra la solicitud y devuelve el enlace |
 | `publicar-actualizacion.ps1` | Cada vez que sale algo a producción | Entrada en el CHANGELOG + Release |
 
@@ -116,22 +118,35 @@ gh auth refresh -s project
 Abre el navegador, confirmas y queda. Sin eso, GitHub no deja crear ni modificar tableros
 desde la línea de comandos.
 
-### Lo único que GitHub no deja automatizar
+### El modelo: de dónde salió
 
-**Las vistas del tablero.** Los campos sí tienen API; las vistas (Tablero y Hoja de ruta)
-no. Son unos clics en la web, una sola vez:
+Está copiado del **roadmap público de Sincosoft**, los autores del ERP SINCO
+(`github.com/orgs/SincosoftSAS/projects/3`): estados con descripción, un campo de trimestre
+para la línea de tiempo, etiquetas temáticas, y una vista por producto además de las tres
+globales.
 
-- **Tablero**: pestaña `View 1` → flechita → *Duplicate view* → renombrar "Tablero" →
-  layout **Board** → *Group by* **Status**.
-- **Hoja de ruta**: `+` al lado de las pestañas → *New view* → renombrar "Hoja de ruta" →
-  layout **Roadmap** → engranaje → *Date fields*: Start = **Inicio**, Target =
-  **Fecha objetivo** → *Zoom level* **Month**.
-- Borrar la `View 1` que quedó vacía.
+Dos cosas se hicieron distinto, a propósito:
 
-Opcional, para no depender de la sincronización manual con lo nuevo: en el tablero →
-`⋯` → *Workflows* → **Auto-add to project** con el filtro
-`is:issue is:open repo:roadmap-cimelec`. Eso mete solas las solicitudes nuevas; los valores
-de los campos los sigue poniendo `SINCRONIZAR-TABLERO.bat`.
+1. **Ellos no publican lo que se descarta.** Aquí sí: `Pausado` y `No va` existen, con el
+   motivo escrito. Saber que algo no se va a hacer sirve tanto como saber que sí.
+2. **Su campo de trimestre quedó abandonado** — la última iteración que definieron es
+   `2024 T2`, y su vista Roadmap no tiene nada que la dibuje. Aquí los trimestres se
+   **pre-generan** hasta `2028 T4`, que es exactamente el modo de falla que se les vio.
+   Cuando se acaben, se amplía `TRIMESTRES_HASTA` en `configurar_tablero.py` y se vuelve a
+   correr.
+
+Ellos tienen un repositorio público por producto (28 en total) y filtran cada vista por
+`repo:`. Aquí todo vive en un solo repositorio y las vistas filtran por
+`label:"app: ..."` — mismo resultado con una novena parte de la configuración.
+
+### Lo único que sigue siendo manual
+
+Nada del tablero: estados, campos y vistas se crean por API con `configurar_tablero.py`.
+
+Lo único que conviene activar a mano, una vez, es que las solicitudes nuevas entren solas al
+tablero: en el tablero → `⋯` → *Workflows* → **Auto-add to project**, filtro
+`is:issue is:open repo:roadmap-cimelec`. Sin eso, `SINCRONIZAR-TABLERO.bat` las mete igual,
+pero solo cuando lo corras.
 
 ### El límite de escritura caduca
 

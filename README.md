@@ -22,13 +22,17 @@ golpe:
 
 | Campo | Qué dice |
 |---|---|
-| **Status** | En qué va: idea, en análisis, en curso, en prueba, publicado, pausado o no va |
+| **Status** | En qué va, de *en evaluación* a *publicado* — la tabla completa más abajo |
 | **Herramienta** | A qué app pertenece |
 | **Prioridad** | Alta, media o baja — la fija la dirección, no el orden de llegada |
+| **Periodo** | En qué trimestre está previsto |
 
-En la parte de arriba del tablero hay pestañas para verlo de dos formas: como **tablero**
-(columnas por estado) o como **hoja de ruta** (línea de tiempo con la fecha objetivo de
-cada entrega).
+Arriba del tablero hay pestañas para verlo de varias formas:
+
+- **General** — todo en una tabla, para buscar y ordenar
+- **Por estado** — columnas por etapa: qué está en desarrollo hoy, qué está en pruebas
+- **Hoja de ruta** — línea de tiempo por trimestre
+- **Una pestaña por herramienta** — solo lo de esa app
 
 ---
 
@@ -51,22 +55,42 @@ Los enlaces de acceso están en el menú interno de la empresa; no se publican a
 
 ## Cómo leer los estados
 
-El campo se llama `Status` (así lo nombra GitHub y no se puede cambiar), y sus valores son:
+El campo se llama `Status` (así lo nombra GitHub y no se puede cambiar). Una solicitud
+recorre estas etapas, en este orden:
 
 | Estado | Qué significa |
 |---|---|
-| 💡 **Idea** | Recibido y anotado. Sin compromiso de fecha todavía |
-| 🔍 **En análisis** | Se está definiendo el alcance y estimando |
-| 🔨 **En curso** | Alguien lo está construyendo ahora |
-| 🧪 **En prueba** | Construido, en verificación antes de publicarlo |
-| ✅ **Publicado** | Ya está en producción y se puede usar |
-| ⏸️ **Pausado** | Detenido a propósito. En la solicitud está el motivo |
-| ❌ **No va** | Se decidió no hacerlo. En la solicitud está el motivo |
+| ⚪ **En evaluación** | Recibido. Estamos validando si entra en los planes. Sin compromiso de fecha |
+| 🔵 **En backlog** | Aceptado y priorizado, todavía sin empezar |
+| 🟣 **En desarrollo** | Se está construyendo ahora |
+| 🟡 **En pruebas** | Construido, en verificación antes de publicarlo |
+| 🟠 **En implementación** | Ya salió, y está en marcha con algunas áreas antes que con todas |
+| 🟢 **Publicado** | Es parte de las herramientas y cualquiera lo usa |
+| 🩷 **Pausado** | Detenido a propósito. El motivo está escrito en la solicitud |
+| 🔴 **No va** | Se decidió no hacerlo. El motivo está escrito en la solicitud |
 
-Una solicitud **cerrada** puede estar cerrada por *Publicado* o por *No va*.
-El estado manda, no el hecho de estar cerrada.
+Las dos últimas se publican a propósito. Una lista donde todo lleva años "en evaluación" no
+dice nada; saber que algo **no** se va a hacer, y por qué, sirve tanto como saber que sí.
 
----
+Una solicitud **cerrada** puede estar cerrada por *Publicado* o por *No va*. El estado manda,
+no el hecho de estar cerrada.
+
+## Cuándo, no qué día
+
+El tablero no promete fechas exactas: promete **trimestres**. El campo `Periodo` dice en qué
+trimestre está previsto algo (`2026 T4 Oct - Dic`, por ejemplo), y la vista **Hoja de ruta**
+lo dibuja en línea de tiempo. Un trimestre es una promesa que se puede cumplir; una fecha
+exacta a seis meses vista, no.
+
+Una solicitud sin `Periodo` es una que todavía no tiene cuándo — normalmente porque está en
+evaluación o en backlog.
+
+## Por temas
+
+Además de la herramienta, cada solicitud lleva etiquetas de **tema** que cruzan todas las
+apps: `informes`, `móvil`, `integraciones`, `automatización`, `inteligencia artificial`,
+`datos y cifras`, `accesos`, `obra`, `nómina`, `compras`, `contabilidad`, `documentos`.
+Sirven para responder "¿qué se está haciendo en materia de X?" sin importar en qué app.
 
 ## Cómo pedir un cambio
 

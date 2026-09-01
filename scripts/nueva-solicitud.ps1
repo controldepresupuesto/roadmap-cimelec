@@ -50,9 +50,9 @@ if (-not $?) {
 
 # ------------------------------------------------------------------- TIPO ----
 $tipo = Menu 'Que es?' @(
-  @{ texto = 'Una mejora (existe pero puede quedar mejor)'; label = 'tipo: mejora'; pre = 'Mejora'; estado = 'estado: idea' },
-  @{ texto = 'Un error (no funciona o el dato esta mal)';   label = 'tipo: error';  pre = 'Error';  estado = 'estado: en analisis' },
-  @{ texto = 'Una idea nueva (no existe todavia)';          label = 'tipo: idea';   pre = 'Idea';   estado = 'estado: idea' }
+  @{ texto = 'Una mejora (existe pero puede quedar mejor)'; label = 'tipo: mejora'; pre = 'Mejora'; estado = 'estado: en evaluacion' },
+  @{ texto = 'Un error (no funciona o el dato esta mal)';   label = 'tipo: error';  pre = 'Error';  estado = 'estado: en evaluacion' },
+  @{ texto = 'Una idea nueva (no existe todavia)';          label = 'tipo: idea';   pre = 'Idea';   estado = 'estado: en evaluacion' }
 )
 
 # --------------------------------------------------------------- HERRAMIENTA ----

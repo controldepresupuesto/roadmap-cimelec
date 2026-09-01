@@ -1,7 +1,7 @@
 name: "🐞 Reportar un error"
 description: Algo que no funciona, muestra un dato equivocado o se cae.
 title: "[Error] "
-labels: ["tipo: error", "estado: en analisis"]
+labels: ["tipo: error", "estado: en evaluacion"]
 body:
   - type: markdown
     attributes:

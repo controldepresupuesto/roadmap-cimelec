@@ -1,7 +1,7 @@
 name: "✨ Pedir una mejora"
 description: Algo que ya funciona pero podría funcionar mejor, o algo que hace falta.
 title: "[Mejora] "
-labels: ["tipo: mejora", "estado: idea"]
+labels: ["tipo: mejora", "estado: en evaluacion"]
 body:
   - type: markdown
     attributes:

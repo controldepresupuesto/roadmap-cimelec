@@ -1,5 +1,11 @@
 # Plataforma CIMELEC — estado y hoja de ruta
 
+## 👉 [ABRIR LA HOJA DE RUTA](https://github.com/users/controldepresupuesto/projects/1)
+
+*El tablero está ahí, no en este repositorio. Se abre sin cuenta.*
+
+---
+
 Aquí se publica **en qué estamos trabajando, qué acaba de salir y qué viene** en las
 herramientas internas del grupo CIMELEC INGENIEROS (CIMELEC, CIMELCON, INGEOCHO,
 INNOMACH y consorcios).
@@ -13,11 +19,9 @@ versiones y el registro de solicitudes. El código vive en repositorios privados
 
 ---
 
-## El tablero
+## Qué hay en el tablero
 
-👉 **[Ver la hoja de ruta](https://github.com/users/controldepresupuesto/projects/1)**
-
-Se abre sin cuenta. Cada tarjeta es una solicitud, y trae tres datos que se leen de un
+Cada tarjeta es una solicitud, y trae tres datos que se leen de un
 golpe:
 
 | Campo | Qué dice |

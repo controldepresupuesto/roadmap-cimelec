@@ -65,7 +65,60 @@ Formato de cada entrada: **✨ Nuevo** · **🔧 Mejorado** · **🐞 Corregido*
 
 ---
 
+## 2026-08-27
+
+**Registro de Horarios**
+- ✨ Los permisos se registran **por horas**, no solo por día completo, y se ven en la vista del mes.
+- ✨ Se pueden marcar varios días de una vez.
+- ⚠️ Quién aprueba una novedad y quién recibe el aviso son ahora **dos listas distintas**. Antes
+  estaban mezcladas; revisa la tuya.
+- 🐞 Un día con el registro abierto pero vacío se contaba como cubierto. Ya no.
+
+**Gestión de Proyectos**
+- ⚠️ El avance se mide de **una sola forma**: por valor ganado. Antes tres cifras del mismo
+  tablero se desmentían entre sí y el presupuesto se contaba de dos maneras.
+- 🐞 Un proyecto al que le cambiaron el nombre en el ERP se contaba dos veces.
+- 🔧 El semáforo ahora dice **«no sé»** cuando le faltan datos, en vez de pintar un color inventado.
+- ⚠️ El permiso por proyecto ya se aplica de verdad. Antes se veía en la configuración y no
+  restringía nada.
+- ✨ Pestaña de documentos del proyecto.
+
+---
+
 ## 2026-08-26
+
+**Portal de Proveedores**
+- 🔧 «Faltan» y «vencidos» dejaron de ser la misma palabra: no es lo mismo un documento que nunca
+  se subió que uno que se venció.
+- 🔧 La cédula dice **qué** falta, no solo que falta algo. Y el SG-F-01 se puede subir ya firmado.
+- ✨ A quien pidió un alta se le avisa el resultado.
+
+**Registro de Horarios**
+- ✨ Calendario del mes, con el día al lado, los turnos en un renglón y un contador de cobertura.
+  Desde ahí se registran novedades y el compensatorio.
+
+---
+
+## 2026-08-25
+
+**Registro de Horarios**
+- ✨ **Los informes de nómina los arma la app.** Antes una persona los copiaba a mano cada mes.
+  Tres vistas en pantalla, dos Excel con fórmulas vivas, hoja de firmas que respeta el corte,
+  y filtros de con/sin registro y con extras.
+- ⚠️ En domingo y festivo todo el tiempo trabajado se liquida como **extra dominical**.
+
+**Portal de Proveedores**
+- ✨ **Alta de empleados**, que no tienen RUT y antes se hacían por fuera. Con cédula,
+  certificación bancaria y hoja de vida; la ciudad sale de la tabla del DANE.
+
+**Gestión de Proyectos**
+- ✨ Panel de variables: la fórmula del valor ganado y las reglas del semáforo se configuran
+  desde la app, sin tocar el código.
+- ✨ Los proyectos se agrupan en portafolios por la naturaleza del gasto.
+
+---
+
+## 2026-08-26 · Biblioteca
 
 **Biblioteca de Informes**
 - ✨ Los informes se publican con un enlace para compartir. Se puede abrir o cerrar el enlace público

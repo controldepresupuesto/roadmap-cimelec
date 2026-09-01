@@ -1,10 +1,25 @@
 # Mantiene el repositorio en SOLO LECTURA para terceros, de forma permanente.
 #
-# Los "interaction limits" de GitHub sirven para lo mismo pero caducan (máximo 6 meses)
-# y hay que renovarlos a mano. Este flujo no caduca: si alguien de afuera abre una
-# solicitud o comenta, se responde con una nota, se cierra y se bloquea el hilo.
+# Los "interaction limits" de GitHub sirven para lo mismo pero caducan (maximo 6 meses) y
+# hay que renovarlos a mano. Este flujo no caduca.
 #
-# Pasa sin tocar nada: OWNER (dueño), MEMBER (organización) y COLLABORATOR (invitado).
+# Pasa sin tocar nada: OWNER (dueno), MEMBER (organizacion) y COLLABORATOR (invitado).
+#
+# OJO con de donde sale el author_association, que es distinto en cada evento:
+#   issues              -> github.event.issue.author_association
+#   issue_comment       -> github.event.COMMENT.author_association   <-- el del comentario,
+#                          NO el del issue. Si se usa el del issue, un comentario de un
+#                          desconocido sobre un issue abierto por el equipo pasa colado.
+#   pull_request_target -> github.event.pull_request.author_association
+#
+# Y hacen falta los PR: los forks NO se pueden desactivar en un repo publico de cuenta
+# personal ("Allow forks setting can only be changed on org-owned private repositories"),
+# asi que cualquiera puede bifurcar y abrir un pull request.
+#
+# Se usa pull_request_target y no pull_request a proposito: pull_request desde un fork
+# recibe un token de solo lectura y no podria cerrar nada. pull_request_target corre en el
+# contexto de este repositorio con token de escritura — es seguro porque este flujo NUNCA
+# hace checkout del codigo del PR.
 
 name: Solo el equipo escribe
 
@@ -13,44 +28,90 @@ on:
     types: [opened, reopened]
   issue_comment:
     types: [created]
+  pull_request_target:
+    types: [opened, reopened]
 
 permissions:
   issues: write
+  pull-requests: write
 
 jobs:
   filtrar:
     runs-on: ubuntu-latest
     if: >
       github.event.sender.type != 'Bot' &&
-      !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
-                github.event.issue.author_association)
+      (
+        (github.event_name == 'issues' &&
+         !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association))
+        ||
+        (github.event_name == 'issue_comment' &&
+         !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
+        ||
+        (github.event_name == 'pull_request_target' &&
+         !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association))
+      )
     steps:
-      - name: Cerrar y bloquear
+      - name: Responder, cerrar y bloquear
         uses: actions/github-script@v7
         with:
           script: |
-            const numero = context.payload.issue.number;
             const repo = { owner: context.repo.owner, repo: context.repo.repo };
+            const evento = context.eventName;
 
             const nota = [
               'Gracias por escribir. 🙏',
               '',
               'Este repositorio es **público para consulta**, pero está cerrado a escritura de',
-              'terceros: solo el equipo interno de CIMELEC INGENIEROS abre y comenta solicitudes.',
+              'terceros: solo el equipo interno de CIMELEC INGENIEROS abre solicitudes, comenta y',
+              'propone cambios.',
               '',
-              'Si trabajas en el grupo, pide acceso al área de control de presupuesto o manda tu',
+              'Si trabajas en el grupo, pide acceso al área de control de presupuesto, o manda tu',
               'solicitud por WhatsApp o correo: se registra aquí igual y te devolvemos el enlace',
               'para seguirla.',
               '',
-              'Si no trabajas en el grupo, siéntete libre de mirar el tablero y el historial de',
+              'Si encontraste un problema de **seguridad**, hay un canal privado para eso: pestaña',
+              'Security → *Report a vulnerability*. Por favor no lo publiques aquí.',
+              '',
+              'Si no trabajas en el grupo, siéntete libre de mirar la hoja de ruta y el historial de',
               'versiones — para eso está publicado.',
               '',
               '<sub>Cerrado automáticamente.</sub>',
             ].join('\n');
 
-            await github.rest.issues.createComment({ ...repo, issue_number: numero, body: nota });
-
-            if (context.eventName === 'issues') {
-              await github.rest.issues.update({ ...repo, issue_number: numero, state: 'closed', state_reason: 'not_planned' });
+            // --- un comentario de alguien de afuera -------------------------------------
+            // No se borra: se colapsa como fuera de tema (queda consultable, no destacado)
+            // y se bloquea el hilo para que no siga.
+            if (evento === 'issue_comment') {
+              const numero = context.payload.issue.number;
+              await github.graphql(
+                `mutation($id: ID!) {
+                   minimizeComment(input: { subjectId: $id, classifier: OFF_TOPIC }) {
+                     minimizedComment { isMinimized }
+                   }
+                 }`,
+                { id: context.payload.comment.node_id }
+              );
+              await github.rest.issues.createComment({ ...repo, issue_number: numero, body: nota });
+              await github.rest.issues.lock({ ...repo, issue_number: numero, lock_reason: 'off-topic' });
+              core.info(`Comentario de ${context.payload.comment.user.login} colapsado en #${numero}`);
+              return;
             }
+
+            // --- un pull request de alguien de afuera -----------------------------------
+            if (evento === 'pull_request_target') {
+              const numero = context.payload.pull_request.number;
+              await github.rest.issues.createComment({ ...repo, issue_number: numero, body: nota });
+              await github.rest.pulls.update({ ...repo, pull_number: numero, state: 'closed' });
+              await github.rest.issues.lock({ ...repo, issue_number: numero, lock_reason: 'off-topic' });
+              core.info(`PR #${numero} de ${context.payload.pull_request.user.login} cerrado`);
+              return;
+            }
+
+            // --- una solicitud de alguien de afuera -------------------------------------
+            const numero = context.payload.issue.number;
+            await github.rest.issues.createComment({ ...repo, issue_number: numero, body: nota });
+            await github.rest.issues.update({
+              ...repo, issue_number: numero, state: 'closed', state_reason: 'not_planned',
+            });
             await github.rest.issues.lock({ ...repo, issue_number: numero, lock_reason: 'off-topic' });
+            core.info(`Solicitud #${numero} de ${context.payload.issue.user.login} cerrada`);

@@ -15,14 +15,20 @@ versiones y el registro de solicitudes. El código vive en repositorios privados
 
 ## El tablero
 
-👉 **[Ver la hoja de ruta](../../projects)**
+👉 **[Ver la hoja de ruta](https://github.com/users/controldepresupuesto/projects/1)**
 
-Tiene dos vistas:
+Se abre sin cuenta. Cada tarjeta es una solicitud, y trae tres datos que se leen de un
+golpe:
 
-| Vista | Para qué sirve |
+| Campo | Qué dice |
 |---|---|
-| **Tablero** | Todo agrupado por estado: qué está en curso hoy, qué está en prueba, qué salió |
-| **Hoja de ruta** | Lo mismo en línea de tiempo, con fecha objetivo de cada entrega |
+| **Status** | En qué va: idea, en análisis, en curso, en prueba, publicado, pausado o no va |
+| **Herramienta** | A qué app pertenece |
+| **Prioridad** | Alta, media o baja — la fija la dirección, no el orden de llegada |
+
+En la parte de arriba del tablero hay pestañas para verlo de dos formas: como **tablero**
+(columnas por estado) o como **hoja de ruta** (línea de tiempo con la fecha objetivo de
+cada entrega).
 
 ---
 
@@ -44,6 +50,8 @@ Los enlaces de acceso están en el menú interno de la empresa; no se publican a
 ---
 
 ## Cómo leer los estados
+
+El campo se llama `Status` (así lo nombra GitHub y no se puede cambiar), y sus valores son:
 
 | Estado | Qué significa |
 |---|---|

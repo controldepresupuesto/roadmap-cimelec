@@ -16,9 +16,19 @@ mantiene solo; sin eso, en un mes está desactualizado y deja de servir.
 | **Release** | Cada publicación, con su nota de versión |
 | **CHANGELOG.md** | Lo mismo que los Releases, pero en una sola página que se lee de corrido |
 
-El **estado** vive en dos lados a propósito: en el label (se ve en la lista de issues) y
-en el campo del Project (permite agrupar el tablero). El script de cambio de estado los
-mueve juntos; si los cambias a mano, cambia los dos.
+**La etiqueta es la fuente de verdad, el tablero es su reflejo.** El estado se cambia en la
+etiqueta del issue (`estado: en curso`) y `SINCRONIZAR-TABLERO.bat` lo copia al campo del
+tablero. Nunca al revés: si lo cambias solo en el tablero, la siguiente sincronización lo
+devuelve a lo que diga la etiqueta.
+
+Dos rarezas del tablero, por si extrañan:
+
+- El campo de estado se llama **`Status`**, en inglés, y no se puede cambiar. GitHub no
+  permite renombrar ni borrar ese campo: la operación de renombrado **responde que tuvo
+  éxito y no hace nada**. Las opciones sí son las nuestras, en español. Se dejó el de
+  fábrica y se eliminó el duplicado en español, para no tener dos campos de estado.
+- Las etiquetas `app:` alimentan el campo **Herramienta** y las `prioridad:` el campo
+  **Prioridad**. Mismo principio: se cambia la etiqueta.
 
 ---
 
@@ -26,11 +36,15 @@ mueve juntos; si los cambias a mano, cambia los dos.
 
 1. **Vaciar la bandeja.** Todo lo que llegó por WhatsApp o correo se registra:
    doble clic en `NUEVA-SOLICITUD.bat`.
-2. **Mover lo que se movió.** Lo que empezó pasa a `en curso`; lo que se terminó, a
-   `en prueba`; lo que se publicó, a `publicado` y se cierra.
-3. **Poner fecha objetivo** a lo que entró en curso. Sin fecha, la vista Hoja de ruta
-   no lo dibuja.
-4. **Revisar lo pausado.** Si algo lleva más de dos meses pausado, decide: o vuelve, o
+2. **Mover lo que se movió.** Cambia la **etiqueta** de estado: lo que empezó pasa a
+   `estado: en curso`; lo que se terminó, a `estado: en prueba`; lo que se publicó, a
+   `estado: publicado` y se cierra.
+3. **Reflejarlo en el tablero.** Doble clic en `SINCRONIZAR-TABLERO.bat`. Agrega lo nuevo,
+   corrige lo que cambió y no toca lo demás.
+4. **Poner fecha objetivo** a lo que entró en curso, en el tablero. Sin fecha, la vista
+   Hoja de ruta no lo dibuja. (Las fechas son lo único que se escribe en el tablero y no
+   en la etiqueta.)
+5. **Revisar lo pausado.** Si algo lleva más de dos meses pausado, decide: o vuelve, o
    pasa a `no va` con el motivo escrito.
 
 ## Cuando se publica algo
@@ -86,7 +100,8 @@ Todos viven en `scripts/`. Los tres con `.bat` en la raíz se corren con doble c
 | Script | Cuándo se corre | Qué hace |
 |---|---|---|
 | `configurar-repo.ps1` | Una vez, y cada 6 meses | Etiquetas, hitos, apaga la wiki y limita la escritura al equipo |
-| `crear-tablero.ps1` | **Una sola vez** | Crea el tablero con sus campos, lo hace público y le mete las solicitudes |
+| `crear-tablero.ps1` | **Ya se corrió** (31-ago-2026) | Creó el tablero. No volver a correrlo: crearía un segundo tablero |
+| `sincronizar_tablero.py` | Cada vez que cambias una etiqueta | Copia estado, herramienta y prioridad de las etiquetas al tablero. Repetible |
 | `nueva-solicitud.ps1` | Cada vez que llega algo por WhatsApp o correo | Registra la solicitud y devuelve el enlace |
 | `publicar-actualizacion.ps1` | Cada vez que sale algo a producción | Entrada en el CHANGELOG + Release |
 
@@ -101,14 +116,22 @@ gh auth refresh -s project
 Abre el navegador, confirmas y queda. Sin eso, GitHub no deja crear ni modificar tableros
 desde la línea de comandos.
 
-### Las dos cosas que GitHub no deja automatizar
+### Lo único que GitHub no deja automatizar
 
-1. **Las vistas del tablero** (Tablero y Hoja de ruta). Se crean con unos clics en la web,
-   una sola vez. El script imprime los pasos exactos al terminar.
-2. **Poner una solicitud nueva en el tablero.** `nueva-solicitud.ps1` crea la solicitud pero
-   no la agrega al tablero. Se arrastra a mano, o se activa el flujo automático del propio
-   tablero: en el tablero → `⋯` → *Workflows* → **Item added to project** → activarlo, y
-   además **Auto-add to project** con el filtro `is:issue is:open repo:roadmap-cimelec`.
+**Las vistas del tablero.** Los campos sí tienen API; las vistas (Tablero y Hoja de ruta)
+no. Son unos clics en la web, una sola vez:
+
+- **Tablero**: pestaña `View 1` → flechita → *Duplicate view* → renombrar "Tablero" →
+  layout **Board** → *Group by* **Status**.
+- **Hoja de ruta**: `+` al lado de las pestañas → *New view* → renombrar "Hoja de ruta" →
+  layout **Roadmap** → engranaje → *Date fields*: Start = **Inicio**, Target =
+  **Fecha objetivo** → *Zoom level* **Month**.
+- Borrar la `View 1` que quedó vacía.
+
+Opcional, para no depender de la sincronización manual con lo nuevo: en el tablero →
+`⋯` → *Workflows* → **Auto-add to project** con el filtro
+`is:issue is:open repo:roadmap-cimelec`. Eso mete solas las solicitudes nuevas; los valores
+de los campos los sigue poniendo `SINCRONIZAR-TABLERO.bat`.
 
 ### El límite de escritura caduca
 
@@ -116,7 +139,13 @@ El candado que impide que un tercero escriba tiene dos capas:
 
 - **Interaction limit** de GitHub: efectivo, pero **caduca a los 6 meses**. Se renueva
   volviendo a correr `configurar-repo.ps1`.
-- **`.github/workflows/solo-equipo.yml`**: no caduca. Si alguien de afuera escribe, le
-  responde, cierra y bloquea el hilo.
+- **`.github/workflows/solo-equipo.yml`**: no caduca. Cubre las tres formas de escribir que
+  tiene un desconocido — abrir una solicitud, comentar y abrir un *pull request* desde un
+  fork — y en cada caso responde, cierra y bloquea. Un comentario ajeno no se borra: se
+  colapsa como fuera de tema, así queda consultable sin quedar destacado.
+
+  Los *forks* **no se pueden desactivar** en un repositorio público de cuenta personal
+  (GitHub solo lo permite en organizaciones), así que cerrar los PR es la única defensa
+  posible por ese lado.
 
 La primera es la que evita el ruido; la segunda es la que garantiza que nunca queda abierto.

@@ -22,3 +22,7 @@ _borrador*
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Salidas de la tarea automatica
+_estado-sincronizacion.txt
+sincronizacion.log

@@ -31,5 +31,7 @@ _VIGILANTE-AVISO.txt
 _PROPUESTAS-ROADMAP.md
 _ultimo-commit-visto.json
 
-# Lienzo de diseno de la pagina (2,5 MB de payload + datos volcados del tablero)
-_diseno/
+# Diseno de la pagina: la FUENTE si se versiona; lo que se regenera, no.
+diseno/hoja-de-ruta-cimelec.html
+diseno/roadmap.json
+diseno/_*

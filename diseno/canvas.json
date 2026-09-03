@@ -1,0 +1,16 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 2800, "title": "Escritorio · 1440", "is_interactive": true },
+    { "file": "Movil.dc.html", "x": 1580, "y": 0, "w": 390, "h": 2600, "title": "Teléfono · 390", "is_interactive": true }
+  ],
+  "annotations": [
+    {
+      "id": "nota-datos",
+      "x": 0,
+      "y": -150,
+      "w": 560,
+      "text": "Los datos son los 58 reales del tablero al 2-sep-2026, no de ejemplo.\nLas cifras, las barras y los contadores de cada filtro se calculan de la lista: si el tablero cambia, se vuelve a inyectar y todo cuadra solo.\n\nLos filtros de arriba funcionan: toca un estado o una herramienta."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

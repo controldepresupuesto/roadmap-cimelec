@@ -1,0 +1,350 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #EEF0F3; color: #0F2340;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased; }
+    a { color: #1C5D9B; text-decoration: none; }
+    a:hover { color: #14507F; text-decoration: underline; }
+    .chip { border: 1px solid #E4E7EE; font: inherit; cursor: pointer; }
+    .plano { border: 1px solid #E4E7EE; font: inherit; color: #0F2340; cursor: pointer; }
+    .tar { display: flex; text-decoration: none; color: inherit; }
+    .tar:active { background: #F7F8FA; }
+    .pie { display: inline-flex; align-items: center; min-height: 44px; }
+    .chip:focus-visible, .plano:focus-visible, .tar:focus-visible, a:focus-visible {
+      outline: 2px solid #2E78B7; outline-offset: 2px; }
+    .num { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="padding: 26px 20px 34px">
+
+  <!-- ENCABEZADO -->
+  <div style="font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: {{tinta}}">Plataforma CIMELEC</div>
+  <h1 style="margin: 8px 0 0; font-size: 30px; line-height: 1.08; letter-spacing: -.02em; font-weight: 700">Hoja de ruta</h1>
+  <p style="margin: 10px 0 0; font-size: 14.5px; line-height: 1.55; color: #5B6472; text-wrap: pretty">En qué va cada herramienta interna: lo que ya salió, lo que está en verificación y lo que estamos evaluando.</p>
+  <div style="font-size: 12.5px; color: #5B6472; margin-top: 10px">Actualizado el {{fecha}}</div>
+
+  <a href="https://github.com/controldepresupuesto/roadmap-cimelec/issues/new?template=01-mejora.yml" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 12px; background: {{fondoAcento}}; color: #fff; font-size: 15.5px; font-weight: 600; margin-top: 18px; text-decoration: none">Pedir una mejora</a>
+
+  <!-- CIFRAS -->
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 20px">
+    <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+      <div style="background: #FFFFFF; border: 1px solid #E4E7EE; border-radius: 14px; padding: 14px 16px">
+        <div class="num" style="font-size: 30px; line-height: 1; font-weight: 700; letter-spacing: -.02em">{{k.v}}</div>
+        <div style="margin-top: 6px; font-size: 13px; font-weight: 600">{{k.l}}</div>
+        <div style="margin-top: 2px; font-size: 12.5px; line-height: 1.35; color: #5B6472">{{k.d}}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- POR HERRAMIENTA -->
+  <div style="background: #FFFFFF; border: 1px solid #E4E7EE; border-radius: 14px; padding: 18px 16px; margin-top: 10px">
+    <h2 style="margin: 0; font-size: 16.5px; font-weight: 700">Cómo va cada herramienta</h2>
+    <div style="font-size: 12.5px; color: #5B6472; margin-top: 4px">La barra es la parte ya publicada</div>
+    <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 14px">
+      <sc-for list="{{apps}}" as="a" hint-placeholder-count="10">
+        <div style="display: flex; align-items: center; gap: 10px; height: 36px">
+          <div style="width: 9px; height: 9px; border-radius: 50%; background: {{a.col}}; flex: none"></div>
+          <div style="flex-grow: 1; min-width: 0; font-size: 13.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{a.nom}}</div>
+          <div style="width: 70px; height: 8px; border-radius: 999px; background: #D8DEE9; overflow: hidden; flex: none">
+            <div style="width: {{a.pct}}; height: 8px; border-radius: 999px; background: {{acento}}"></div>
+          </div>
+          <div class="num" style="width: 44px; text-align: right; font-size: 12.5px; color: #5B6472; flex: none; white-space: nowrap">{{a.txt}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 30px">
+    <h2 style="margin: 0; font-size: 16.5px; font-weight: 700">Las solicitudes</h2>
+    <div class="num" style="font-size: 12.5px; color: #5B6472">{{resumen}}</div>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px">
+    <sc-for list="{{estados}}" as="e" hint-placeholder-count="5">
+      <button type="button" class="chip" onClick="{{e.pick}}" style="display: flex; align-items: center; gap: 7px; height: 44px; padding: 0 14px; border-radius: 999px; background: {{e.bg}}; color: {{e.ink}}; font-size: 13.5px; font-weight: 600; box-shadow: {{e.anillo}}">
+        <span>{{e.nom}}</span>
+        <span class="num" style="font-size: 12.5px; opacity: .8">{{e.n}}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px">
+    <sc-for list="{{apps}}" as="a" hint-placeholder-count="10">
+      <button type="button" class="chip" onClick="{{a.pick}}" style="display: flex; align-items: center; gap: 7px; height: 44px; padding: 0 14px; border-radius: 999px; background: #FFFFFF; color: #0F2340; font-size: 13.5px; font-weight: 600; box-shadow: {{a.anillo}}">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: {{a.col}}"></span>
+        <span>{{a.corto}}</span>
+        <span class="num" style="font-size: 12.5px; color: #5B6472">{{a.n}}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{hayFiltro}}" hint-placeholder-val="{{true}}">
+    <button type="button" class="plano" onClick="{{limpiar}}" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 44px; border-radius: 12px; background: #FFFFFF; font-size: 14px; font-weight: 600; color: {{tinta}}; margin-top: 10px">Quitar filtros</button>
+  </sc-if>
+
+  <!-- TARJETAS -->
+  <sc-if value="{{hayItems}}" hint-placeholder-val="{{true}}">
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px">
+      <sc-for list="{{items}}" as="s" hint-placeholder-count="6">
+        <a class="tar" href="{{s.url}}" style="background: #FFFFFF; border: 1px solid #E4E7EE; border-radius: 14px; padding: 14px 16px; flex-direction: column; gap: 9px; min-height: 44px">
+          <span style="display: flex; justify-content: space-between; align-items: center; gap: 10px">
+            <span style="font-size: 11.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: {{s.tipoCol}}">{{s.tipoNom}}</span>
+            <span style="display: flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; background: {{s.estBg}}; border: 1px solid {{s.estBorde}}; color: {{s.estInk}}; font-size: 12px; font-weight: 600; white-space: nowrap">{{s.estNom}}</span>
+          </span>
+          <span style="font-size: 15px; line-height: 1.4; font-weight: 600; color: #0F2340; text-wrap: pretty">{{s.t}}</span>
+          <span style="display: flex; justify-content: space-between; align-items: center; gap: 10px">
+            <span style="display: flex; align-items: center; gap: 7px; min-width: 0">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: {{s.appCol}}; flex: none"></span>
+              <span style="font-size: 12.5px; color: #5B6472; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{s.appNom}}</span>
+            </span>
+            <span class="num" style="font-size: 12px; color: #5B6472; flex: none">#{{s.n}}</span>
+          </span>
+        </a>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{hayBoton}}" hint-placeholder-val="{{true}}">
+    <button type="button" class="plano" onClick="{{verMas}}" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 48px; border-radius: 12px; background: #FFFFFF; font-size: 14.5px; font-weight: 600; margin-top: 10px">{{textoMas}}</button>
+  </sc-if>
+
+  <sc-if value="{{vacio}}" hint-placeholder-val="{{false}}">
+    <div style="background: #FFFFFF; border: 1px dashed #D8DEE9; border-radius: 14px; padding: 24px 18px; margin-top: 10px; text-align: center">
+      <div style="font-size: 15px; font-weight: 600">Con esos filtros no queda nada.</div>
+      <div style="font-size: 13.5px; color: #5B6472; margin-top: 5px">Quita uno y vuelve a mirar.</div>
+    </div>
+  </sc-if>
+
+  <!-- PIE -->
+  <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 28px; padding-top: 18px; border-top: 1px solid #E4E7EE">
+    <div style="font-size: 12.5px; line-height: 1.5; color: #5B6472">Las cifras, las barras y los contadores salen del tablero: no se escriben a mano.</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 13.5px; font-weight: 600">
+      <a class="pie" href="https://github.com/users/controldepresupuesto/projects/1">Ver el tablero</a>
+      <a class="pie" href="https://github.com/controldepresupuesto/roadmap-cimelec/blob/main/CHANGELOG.md">Historial</a>
+      <a class="pie" href="https://github.com/controldepresupuesto/roadmap-cimelec/issues/new?template=02-error.yml">Reportar un error</a>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"acento":{"editor":"color","default":"#5f8b1f","options":["#5f8b1f","#1864AB","#C2255C","#7a5600"],"section":"Estilo"},"orden":{"editor":"enum","default":"Por estado","options":["Por estado","Por herramienta","Lo más reciente"],"section":"Contenido"},"$preview":{"width":390,"height":2600}}'>
+const APPS = [
+  { id: "horarios", nom: "Registro de Horarios", corto: "Horarios", col: "#9C36B5" },
+  { id: "proveedores", nom: "Portal de Proveedores", corto: "Proveedores", col: "#5F3DC4" },
+  { id: "datamart", nom: "Tablero DataMart", corto: "DataMart", col: "#1864AB" },
+  { id: "plataforma", nom: "Plataforma", corto: "Plataforma", col: "#C2255C" },
+  { id: "geo", nom: "Consulta Geográfica", corto: "Geo", col: "#5C940D" },
+  { id: "bitacora", nom: "Bitácora de Obra", corto: "Bitácora", col: "#E8590C" },
+  { id: "proyectos", nom: "Gestión de Proyectos", corto: "Proyectos", col: "#0C8599" },
+  { id: "asistente", nom: "Asistente", corto: "Asistente", col: "#2F9E44" },
+  { id: "menu", nom: "Menú de entrada", corto: "Menú", col: "#495057" },
+  { id: "biblioteca", nom: "Biblioteca de Informes", corto: "Biblioteca", col: "#099268" },
+];
+const APP = {}; APPS.forEach((a) => { APP[a.id] = a; });
+const APP_ORD = {}; APPS.forEach((a, k) => { APP_ORD[a.id] = k; });
+
+const ESTADOS = [
+  { id: "en evaluacion", nom: "En evaluación", bg: "#ECEEF2", ink: "#5B6472", borde: "#DCE1E9" },
+  { id: "en backlog", nom: "En backlog", bg: "#DDECF8", ink: "#1C5D9B", borde: "#C3DBEF" },
+  { id: "en desarrollo", nom: "En desarrollo", bg: "#CFE4F5", ink: "#14507F", borde: "#B3D3EC" },
+  { id: "en pruebas", nom: "En pruebas", bg: "#F6E8D2", ink: "#8A5A00", borde: "#E8D3AE" },
+  { id: "en implementacion", nom: "En implementación", bg: "#FAF0D6", ink: "#7a5600", borde: "#EBDCB4" },
+  { id: "publicado", nom: "Publicado", bg: "#DFEEE2", ink: "#3f5a1e", borde: "#C7E0CE" },
+  { id: "pausado", nom: "Pausado", bg: "#EFEAE1", ink: "#7a5600", borde: "#E0D6C4" },
+  { id: "no va", nom: "No va", bg: "#ECEEF2", ink: "#6E7781", borde: "#DCE1E9" },
+];
+const EST = {}; ESTADOS.forEach((e) => { EST[e.id] = e; });
+const EST_ORD = {}; ESTADOS.forEach((e, k) => { EST_ORD[e.id] = k; });
+
+const TIP = {
+  nuevo: { nom: "Nuevo", col: "#3f5a1e" },
+  mejora: { nom: "Mejora", col: "#1C5D9B" },
+  error: { nom: "Error", col: "#B42318" },
+  idea: { nom: "Idea", col: "#7a5600" },
+};
+
+// La fecha es la de esta inyeccion: la pagina no la escribe a mano.
+const FECHA = "2 de septiembre de 2026";
+
+// Las 58 solicitudes del tablero, tal como las devuelve el repositorio.
+const ITEMS = [
+  { n: 58, t: "Estado de cada placa de la flota: SOAT, tecnomecánica y propiedad", a: "plataforma", e: "en evaluacion", k: "idea" },
+  { n: 57, t: "Qué hay enterrado antes de excavar: redes de servicios públicos", a: "geo", e: "en evaluacion", k: "idea" },
+  { n: 56, t: "Lluvia por estación, para justificar y programar la obra", a: "bitacora", e: "en evaluacion", k: "idea" },
+  { n: 55, t: "Índices oficiales para los reajustes y para los leasings", a: "datamart", e: "en evaluacion", k: "idea" },
+  { n: 54, t: "Antecedentes de una persona o una empresa en una sola consulta", a: "plataforma", e: "en evaluacion", k: "idea" },
+  { n: 53, t: "Validar un tercero contra la fuente oficial antes de crearlo", a: "proveedores", e: "en evaluacion", k: "idea" },
+  { n: 52, t: "Licitaciones públicas: qué hay abierto, quién ganó y a qué precio", a: "plataforma", e: "en evaluacion", k: "idea" },
+  { n: 51, t: "Asistente por WhatsApp: pedir la cédula de una persona por su nombre", a: "asistente", e: "publicado", k: "mejora" },
+  { n: 50, t: "Asistente por WhatsApp: pedir un informe, un archivo o un correo por mensaje", a: "asistente", e: "publicado", k: "nuevo" },
+  { n: 49, t: "En la ficha, el nombre de cada documento se ve apretado", a: "proveedores", e: "en backlog", k: "error" },
+  { n: 48, t: "Las tablas se leen en el teléfono", a: "proveedores", e: "publicado", k: "mejora" },
+  { n: 47, t: "El rechazo del ERP ahora dice qué campo lo causó", a: "proveedores", e: "en pruebas", k: "error" },
+  { n: 46, t: "La firma se registra en el primer ingreso", a: "horarios", e: "publicado", k: "mejora" },
+  { n: 45, t: "«Ver detalle» de la planilla no abría nada", a: "horarios", e: "publicado", k: "error" },
+  { n: 44, t: "La hora se elige en una rueda, y la planilla trae los cortes de nómina", a: "horarios", e: "publicado", k: "mejora" },
+  { n: 43, t: "El turno se elige al marcar, no después", a: "horarios", e: "publicado", k: "mejora" },
+  { n: 42, t: "El día registrado desde el calendario quedaba en el centro de costo equivocado", a: "horarios", e: "publicado", k: "error" },
+  { n: 41, t: "Los colores del calendario dicen una sola cosa", a: "horarios", e: "publicado", k: "mejora" },
+  { n: 40, t: "La segunda jornada del día no se podía completar", a: "horarios", e: "publicado", k: "error" },
+  { n: 39, t: "En qué calzada está parado alguien", a: "geo", e: "publicado", k: "nuevo" },
+  { n: 38, t: "El permiso por proyecto dejó de ser decorativo", a: "proyectos", e: "publicado", k: "mejora" },
+  { n: 37, t: "Portafolios, interesados y documentos", a: "proyectos", e: "publicado", k: "nuevo" },
+  { n: 36, t: "Las fórmulas se configuran, no se programan", a: "proyectos", e: "publicado", k: "nuevo" },
+  { n: 35, t: "El avance tiene un solo dueño", a: "proyectos", e: "publicado", k: "mejora" },
+  { n: 34, t: "«faltan» y «vencidos» dejaron de ser la misma palabra", a: "proveedores", e: "publicado", k: "mejora" },
+  { n: 33, t: "Un registro atascado se quedaba atascado", a: "proveedores", e: "publicado", k: "error" },
+  { n: 32, t: "La pantalla dejó de hablar de sistemas y pasó a ser tres pasos", a: "proveedores", e: "publicado", k: "mejora" },
+  { n: 31, t: "Alta de empleados, que no tienen RUT", a: "proveedores", e: "publicado", k: "nuevo" },
+  { n: 30, t: "Quién de la nómina nunca ha entrado a la app", a: "horarios", e: "publicado", k: "nuevo" },
+  { n: 29, t: "Un día abierto y vacío parecía un día cubierto", a: "horarios", e: "publicado", k: "error" },
+  { n: 28, t: "Quién aprueba y quién recibe el aviso son dos cosas distintas", a: "horarios", e: "publicado", k: "mejora" },
+  { n: 27, t: "Marcar varios días de una vez", a: "horarios", e: "publicado", k: "mejora" },
+  { n: 26, t: "Domingos y festivos se pagan como extra dominical", a: "horarios", e: "publicado", k: "mejora" },
+  { n: 25, t: "Permisos por horas, no solo por día", a: "horarios", e: "publicado", k: "nuevo" },
+  { n: 24, t: "Calendario del mes", a: "horarios", e: "publicado", k: "nuevo" },
+  { n: 23, t: "Los informes de nómina los arma la app", a: "horarios", e: "publicado", k: "nuevo" },
+  { n: 22, t: "Firmas por rol y gestor de usuarios", a: "bitacora", e: "publicado", k: "mejora" },
+  { n: 21, t: "Una cifra que mezclaba unidades distintas mostraba un número sin sentido", a: "datamart", e: "publicado", k: "error" },
+  { n: 20, t: "Avisa por correo cuando falla una fuente de datos", a: "datamart", e: "publicado", k: "mejora" },
+  { n: 19, t: "Se puede agrandar la letra y la interfaz", a: "datamart", e: "publicado", k: "mejora" },
+  { n: 18, t: "El NIT se valida con varias lecturas del documento", a: "proveedores", e: "publicado", k: "mejora" },
+  { n: 17, t: "La firma se propone desde la cédula", a: "proveedores", e: "publicado", k: "mejora" },
+  { n: 16, t: "Enlace para compartir cada informe", a: "biblioteca", e: "publicado", k: "nuevo" },
+  { n: 15, t: "Malla vial de Bogotá disponible para consultar", a: "geo", e: "publicado", k: "nuevo" },
+  { n: 14, t: "Ingreso propio con usuario y clave", a: "menu", e: "publicado", k: "nuevo" },
+  { n: 13, t: "El botón Editar abre el registro exacto", a: "horarios", e: "publicado", k: "mejora" },
+  { n: 12, t: "Dar acceso al equipo para que reporte directo", a: "plataforma", e: "pausado", k: "mejora" },
+  { n: 11, t: "Enlazar esta hoja de ruta desde el menú de entrada", a: "menu", e: "publicado", k: "mejora" },
+  { n: 10, t: "Buscar la localidad o la UPL por su nombre", a: "geo", e: "en backlog", k: "mejora" },
+  { n: 9, t: "Buscar por el cruce de dos vías", a: "geo", e: "en evaluacion", k: "mejora" },
+  { n: 8, t: "Que el proveedor se registre él mismo", a: "proveedores", e: "en backlog", k: "mejora" },
+  { n: 7, t: "Terminar de ordenar las medidas por área", a: "datamart", e: "en backlog", k: "mejora" },
+  { n: 6, t: "Área de proyección al cierre de la obra", a: "datamart", e: "en evaluacion", k: "nuevo" },
+  { n: 5, t: "Explicación de cada cifra y cada filtro", a: "datamart", e: "publicado", k: "mejora" },
+  { n: 4, t: "Publicar Bitácora y Horarios en las tiendas de aplicaciones", a: "plataforma", e: "en backlog", k: "nuevo" },
+  { n: 3, t: "Verificar el CIV de cada registro contra la malla vial de Bogotá", a: "bitacora", e: "en evaluacion", k: "idea" },
+  { n: 2, t: "Rediseño de la app en el celular", a: "horarios", e: "publicado", k: "mejora" },
+  { n: 1, t: "Editar registros desde el computador", a: "bitacora", e: "en backlog", k: "mejora" },
+];
+
+const TOPE = 6;
+const TARJETA = '#FFFFFF';  // el texto del acento va sobre la tarjeta blanca, no sobre el fondo
+const RESERVA = { nom: 'Sin clasificar', col: '#495057', bg: '#ECEEF2', ink: '#5B6472', borde: '#DCE1E9' };
+
+function lum(h) {
+  const c = [1, 3, 5].map((i) => parseInt(h.substr(i, 2), 16) / 255)
+    .map((v) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+function razon(a, b) {
+  const x = lum(a), y = lum(b);
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+}
+function oscurecer(hex, fondo, min) {
+  if (!/^#[0-9a-fA-F]{6}$/.test(hex || '')) return '#3f5a1e';
+  let r = parseInt(hex.substr(1, 2), 16), g = parseInt(hex.substr(3, 2), 16), b = parseInt(hex.substr(5, 2), 16);
+  let sal = hex;
+  for (let k = 0; k < 30 && razon(sal, fondo) < min; k++) {
+    r = Math.round(r * 0.9); g = Math.round(g * 0.9); b = Math.round(b * 0.9);
+    sal = '#' + [r, g, b].map((v) => ('0' + v.toString(16)).slice(-2)).join('');
+  }
+  return sal;
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { app: null, est: null, todo: false };
+  }
+
+  renderVals() {
+    const acento = this.props.acento ?? '#5f8b1f';
+    const orden = this.props.orden ?? 'Por estado';
+    const sel = this.state;
+
+    const cuenta = (f) => ITEMS.filter(f).length;
+    const anillo = (activo) => (activo ? 'inset 0 0 0 2px ' + acento : 'none');
+
+    const apps = APPS.map((a) => {
+      const n = cuenta((i) => i.a === a.id);
+      const pub = cuenta((i) => i.a === a.id && i.e === 'publicado');
+      return Object.assign({}, a, {
+        n: n,
+        pct: (n ? Math.round((pub / n) * 100) : 0) + '%',
+        txt: pub + ' / ' + n,
+        anillo: anillo(sel.app === a.id),
+        pick: () => this.setState({ app: sel.app === a.id ? null : a.id, todo: false }),
+      });
+    });
+
+    const estados = ESTADOS.filter((e) => cuenta((i) => i.e === e.id) > 0).map((e) =>
+      Object.assign({}, e, {
+        n: cuenta((i) => i.e === e.id),
+        anillo: anillo(sel.est === e.id),
+        pick: () => this.setState({ est: sel.est === e.id ? null : e.id, todo: false }),
+      }));
+
+    const vistos = ITEMS.filter((i) => (!sel.app || i.a === sel.app) && (!sel.est || i.e === sel.est));
+    const peso = {
+      'Por estado': (i) => EST_ORD[i.e] * 1000 + APP_ORD[i.a] * 10 - i.n / 100,
+      'Por herramienta': (i) => APP_ORD[i.a] * 1000 + EST_ORD[i.e] * 100 - i.n / 100,
+      'Lo más reciente': (i) => -i.n,
+    };
+    const clave = peso[orden] || peso['Por estado'];
+    vistos.sort((x, y) => clave(x) - clave(y));
+
+    const recorte = sel.todo ? vistos : vistos.slice(0, TOPE);
+    const items = recorte.map((i) => {
+      const e = EST[i.e] || RESERVA, a = APP[i.a] || RESERVA, t = TIP[i.k] || TIP.mejora;
+      return {
+        n: i.n, t: i.t, url: 'https://github.com/controldepresupuesto/roadmap-cimelec/issues/' + i.n,
+        appNom: a.nom, appCol: a.col,
+        estNom: e.nom, estBg: e.bg, estInk: e.ink, estBorde: e.borde,
+        tipoNom: t.nom, tipoCol: t.col,
+      };
+    });
+
+    const pub = cuenta((i) => i.e === 'publicado');
+    const sobran = vistos.length - recorte.length;
+
+    return {
+      acento: acento,
+      tinta: oscurecer(acento, TARJETA, 4.5),
+      fondoAcento: oscurecer(acento, '#FFFFFF', 4.5),
+      fecha: FECHA,
+      kpis: [
+        { v: String(ITEMS.length), l: 'solicitudes', d: 'en el tablero' },
+        { v: String(pub), l: 'publicadas', d: 'ya en producción' },
+        { v: String(ITEMS.length - pub), l: 'en camino', d: 'aún sin publicar' },
+        { v: String(APPS.length), l: 'herramientas', d: 'con desarrollo propio' },
+      ],
+      apps: apps,
+      estados: estados,
+      items: items,
+      resumen: items.length + ' de ' + ITEMS.length,
+      hayFiltro: !!(sel.app || sel.est),
+      hayItems: items.length > 0,
+      vacio: vistos.length === 0,
+      hayBoton: sobran > 0 || sel.todo,
+      textoMas: sobran > 0 ? 'Ver las ' + sobran + ' restantes' : 'Ver menos',
+      verMas: () => this.setState({ todo: !sel.todo }),
+      limpiar: () => this.setState({ app: null, est: null, todo: false }),
+    };
+  }
+}
+</script>
+</body>
+</html>

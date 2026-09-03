@@ -7,11 +7,58 @@ Formato de cada entrada: **✨ Nuevo** · **🔧 Mejorado** · **🐞 Corregido*
 
 ---
 
+## 2026-09-02
+
+**Registro de Horarios**
+- ⚠️ La firma dejó de ser opcional: el primer ingreso pide correo, clave propia y firma, y no deja
+  registrar nada hasta completarlas. Si la firma falta o se borra, la app vuelve a pedirla. Antes
+  había días confirmados que se imprimían con la casilla de la firma en blanco.
+- 🐞 El día registrado desde el calendario quedaba en el centro de costo base del empleado y no en
+  el que correspondía. Ahora el centro se elige al registrar, también al marcar varios días de una
+  vez, y cada opción dice si ese día ya tiene jornada en ese centro.
+- 🔧 El turno se elige en el momento de marcar: quien tiene turno diurno y trabajó de noche ya no
+  ve su día liquidado con la cuota del diurno.
+- ✨ La segunda jornada se agrega desde el calendario con el día en borrador, sin tener que enviarlo
+  y reabrirlo.
+- 🔧 La hora se elige en una rueda de hora y minuto, en vez del control del teléfono, que mostraba
+  19:30 como «07:30 p. m.».
+- 🔧 Mi planilla trae los cortes **21 al 20** y **15 al 14** como atajo, con la misma regla de los
+  informes.
+- 🐞 «Ver detalle» de la planilla no abría nada, ni desde el botón ni desde la fila, y tampoco
+  avisaba del error.
+- 🐞 El resumen del mes contaba dos veces el día que tiene jornada y novedad a la vez: decía «4 de
+  31» habiendo 2 días.
+- 🔧 En el celular, el cuadro de la firma guardaba el trazo estirado y en tema claro no se veía
+  dónde firmar.
+
+**Portal de Proveedores**
+- 🔧 En el teléfono, las tablas de Órdenes, Facturas, Actas y Contratos se leen como tarjetas: con
+  las siete columnas de Órdenes había que arrastrar de lado, y lo que quedaba fuera era justo el
+  total y el pendiente.
+- 🔧 Cuando el ERP rechaza la creación de un tercero, la ficha dice el campo y la regla que lo
+  causaron, en vez de «presenta inconsistencias». El botón del paso se queda a la vista, en gris y
+  con el motivo.
+- 🐞 Un tercero sin cuenta bancaria era rechazado siempre, porque el correo de tesorería viajaba
+  solo. Ahora solo se envía cuando la cuenta está completa; el correo sigue viajando en los campos
+  donde ya iba.
+- 🐞 El enlace a la DIAN nunca había abierto, y el título de una orden descargaba el PDF en vez de
+  abrir la ficha.
+
+---
+
 ## 2026-09-01
 
 **Menú de entrada**
 - ✨ Tarjeta **Hoja de ruta** en el grupo *Sitio público*: desde el menú se puede ver en qué va
   cada desarrollo. Se abre sin cuenta.
+
+**Registro de Horarios**
+- 🔧 Las convenciones del calendario: el relleno de la celda dice el estado del día y una banda de
+  color dice el tipo de novedad. Antes el dorado era «enviado», domingo y permiso a la vez, y dos
+  tipos de novedad se veían del mismo tono.
+- 🐞 En el celular las horas del día («8h 30m») se partían en dos renglones y el segundo se cortaba.
+- 🐞 Un festivo trabajado nunca mostraba su marca, y a 320 px las celdas del calendario se
+  solapaban.
 
 ---
 
@@ -27,6 +74,9 @@ Formato de cada entrada: **✨ Nuevo** · **🔧 Mejorado** · **🐞 Corregido*
   y se dice en qué localidad y UPL cae una coordenada.
 
 **Registro de Horarios**
+- 🐞 Con la primera jornada cerrada y la segunda abierta, la pantalla decía «falta la salida» sin
+  dar con qué marcarla, el día no salía como pendiente y las horas se calculaban sobre la jornada
+  equivocada.
 - 🐞 El encabezado parpadeaba al cambiar de pantalla. Ya no.
 - 🔧 La app dice en qué versión está, para poder reportar un problema con precisión.
 

@@ -26,6 +26,7 @@ $etiquetas = @(
   @{ n='app: biblioteca';    c='099268'; d='Biblioteca de Informes' },
   @{ n='app: geo';           c='5C940D'; d='Consulta Geografica' },
   @{ n='app: asistente';     c='2F9E44'; d='Asistente por WhatsApp' },
+  @{ n='app: correo';        c='364FC7'; d='Consulta de Correo' },
   @{ n='app: menu';          c='495057'; d='Menu de entrada' },
   @{ n='app: plataforma';    c='C2255C'; d='Transversal: varias herramientas' },
   # Tipo

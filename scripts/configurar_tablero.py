@@ -52,7 +52,7 @@ TRIMESTRES_DESDE = datetime.date(2026, 7, 1)
 TRIMESTRES_HASTA = datetime.date(2029, 1, 1)
 
 # Cada app con su color. Ojo: la paleta de un campo de tablero tiene solo OCHO colores
-# (GRAY BLUE GREEN YELLOW ORANGE RED PINK PURPLE) y hay diez herramientas, asi que dos
+# (GRAY BLUE GREEN YELLOW ORANGE RED PINK PURPLE) y hay once herramientas, asi que tres
 # parejas comparten color. En las ETIQUETAS del repo si hay un color distinto para cada una,
 # porque ahi el color es un hex libre — ver configurar-repo.ps1.
 #   (nombre, etiqueta, color del tablero, nombre anterior de la opcion, descripcion)
@@ -65,6 +65,7 @@ HERRAMIENTAS = [
     ("📚 Biblioteca de Informes", "app: biblioteca",  "GREEN",  "Biblioteca de Informes", "Informes publicados"),
     ("🌎 Consulta Geográfica",    "app: geo",         "GREEN",  "Consulta Geográfica",    "Malla vial de Bogotá"),
     ("💬 Asistente",              "app: asistente",   "GRAY",   "Asistente",              "Consultas por WhatsApp"),
+    ("📧 Consulta de Correo",     "app: correo",      "ORANGE", "Consulta de Correo",     "Correo de la empresa"),
     ("🏠 Menú de entrada",        "app: menu",        "GRAY",   "Menú de entrada",        "Acceso a las herramientas"),
     ("🔧 Plataforma",             "app: plataforma",  "RED",    "Plataforma",             "Afecta a varias herramientas"),
 ]

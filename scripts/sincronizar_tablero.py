@@ -51,6 +51,7 @@ MAPA = {
         "app: biblioteca":  "📚 Biblioteca de Informes",
         "app: geo":         "🌎 Consulta Geográfica",
         "app: asistente":   "💬 Asistente",
+        "app: correo":      "📧 Consulta de Correo",
         "app: menu":        "🏠 Menú de entrada",
         "app: plataforma":  "🔧 Plataforma",
     },

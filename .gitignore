@@ -35,3 +35,7 @@ _ultimo-commit-visto.json
 diseno/hoja-de-ruta-cimelec.html
 diseno/roadmap.json
 diseno/_*
+
+# Python compilado: se regenera solo en cada corrida
+__pycache__/
+*.pyc

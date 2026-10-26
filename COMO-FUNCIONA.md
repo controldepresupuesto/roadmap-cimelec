@@ -124,6 +124,16 @@ quien hizo el trabajo, están fechados, y no dependen de que alguien se acuerde 
 **No publica nada.** Marca en el archivo lo que quieras que entre, dímelo, y lo redacto en
 lenguaje de negocio y lo cargo. Capturar es lo que se olvida; revisar son treinta segundos.
 
+Lee cada proyecto **de su carpeta en el disco** y solo va a GitHub por los que no tienen copia
+local. Hasta el 25-oct-2026 leía solo GitHub y se le escaparon seis apps que nunca tuvieron
+copia allá, más cinco semanas del asistente, que no se subía. Si nace un proyecto nuevo, se
+añade a `REPOS` en el script con su etiqueta `app:`.
+
+Lo que no se carga **se acumula**: cada lunes pone lo nuevo arriba y deja debajo lo que seguía
+sin cargar. Después de poner el roadmap al día, `python scripts\proponer_desde_commits.py
+--solo-marcar` mueve la marca a lo último de cada proyecto y vacía las propuestas, para que el
+lunes siguiente no repita lo ya cargado.
+
 Se descartó hacerlo con un *hook* de la sesión: capturaría menos que los commits, añadiría peso
 a cada sesión, no funcionaría hacia atrás, y dependería de que la sesión terminara bien.
 

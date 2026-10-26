@@ -16,8 +16,8 @@ Write-Host ''
 $etiquetas = @(
   # Herramienta
   # Un color propio para cada app: es la identidad visual con la que se reconoce en la lista.
-  # En las etiquetas el color es un hex libre, asi que las diez son distintas. En el campo
-  # del tablero la paleta tiene solo ocho colores y dos parejas comparten.
+  # En las etiquetas el color es un hex libre, asi que todas son distintas. En el campo
+  # del tablero la paleta tiene solo ocho colores y varias comparten.
   @{ n='app: datamart';      c='1864AB'; d='Tablero DataMart' },
   @{ n='app: bitacora';      c='E8590C'; d='Bitacora de Obra' },
   @{ n='app: horarios';      c='9C36B5'; d='Registro de Horarios' },
@@ -27,6 +27,13 @@ $etiquetas = @(
   @{ n='app: geo';           c='5C940D'; d='Consulta Geografica' },
   @{ n='app: asistente';     c='2F9E44'; d='Asistente por WhatsApp' },
   @{ n='app: correo';        c='364FC7'; d='Consulta de Correo' },
+  @{ n='app: automatizaciones'; c='F08C00'; d='Panel de Automatizaciones' },
+  @{ n='app: finanzas';      c='2B8A3E'; d='Finanzas: contabilidad, tesoreria e impuestos' },
+  @{ n='app: cajas';         c='D6336C'; d='Cajas Menores' },
+  @{ n='app: planoteca';     c='1971C2'; d='Planoteca: planos con su revision vigente' },
+  @{ n='app: pesv';          c='E03131'; d='Seguridad Vial (PESV)' },
+  @{ n='app: capacitacion';  c='7048E8'; d='Capacitacion: cursos en video' },
+  @{ n='app: rues';          c='868E96'; d='Consulta RUES: camaras de comercio' },
   @{ n='app: menu';          c='495057'; d='Menu de entrada' },
   @{ n='app: plataforma';    c='C2255C'; d='Transversal: varias herramientas' },
   # Tipo

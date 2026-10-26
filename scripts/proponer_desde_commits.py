@@ -13,6 +13,7 @@ revisar son treinta segundos.
 Solo lectura sobre GitHub. Guarda su marca de avance en _ultimo-commit-visto.json.
 """
 
+import datetime
 import io
 import json
 import os
@@ -27,20 +28,36 @@ except Exception:
 
 DUENO = "controldepresupuesto"
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ARBOL = os.path.dirname(RAIZ)   # Datamart_ERP: ahi viven las carpetas de los proyectos
 MARCA = os.path.join(RAIZ, "_ultimo-commit-visto.json")
 SALIDA = os.path.join(RAIZ, "_PROPUESTAS-ROADMAP.md")
 
-# repositorio -> etiqueta de app del roadmap
+# repositorio -> (etiqueta de app del roadmap, carpeta local bajo Datamart_ERP)
+#
+# Se lee del DISCO cuando la carpeta existe: ahi esta todo lo construido, este o no subido a
+# GitHub. Hasta el 25-oct-2026 solo se leia GitHub, y se escaparon seis apps que nunca
+# tuvieron copia alla (automatizaciones, finanzas, capacitacion, planoteca...) y cinco semanas
+# del asistente, que no se subia desde el 15-sep. None = solo esta en GitHub.
 REPOS = {
-    "app-horarios":    "app: horarios",
-    "bitacora-obra":   "app: bitacora",
-    "api-geo-bogota":  "app: geo",
-    "web-proveedores": "app: proveedores",
-    "robot-sinco":     "app: proveedores",
-    "datamart-motor":  "app: datamart",
-    "datamart-api":    "app: datamart",
-    "app-proyectos":   "app: proyectos",
-    "bot-whatsapp":    "app: asistente",
+    "app-horarios":      ("app: horarios",         "11-REGISTRO DE HORARIOS PERSONAL - OK"),
+    "bitacora-obra":     ("app: bitacora",         "08-BITACORA DE OBRA - EN PROCESO"),
+    "api-geo-bogota":    ("app: geo",              "18-API GEO BOGOTA - OK"),
+    "web-proveedores":   ("app: proveedores",      "10-PAGWEB PROVEEDORES - EN DESARROLLO"),
+    "robot-sinco":       ("app: proveedores",      "12-ROBOT SINCO"),
+    "datamart-motor":    ("app: datamart",         "01- MOTOR PAGINA WEB - DATAMART"),
+    "datamart-api":      ("app: datamart",         None),
+    "app-proyectos":     ("app: proyectos",        "10-APP GESTION DE PROYECTOS - EN PROCESO"),
+    "bot-whatsapp":      ("app: asistente",        "03-CHATBOT - WHATSAPP"),
+    "app-cajas-menores": ("app: cajas",            None),
+    "app-pesv":          ("app: pesv",             "36-PESV"),
+    # sin copia en GitHub
+    "automatizaciones":  ("app: automatizaciones", "00-AUTOMATIZACIONES - EN DESARROLLO"),
+    "conexion-dian":     ("app: automatizaciones", "34-CONEXION DIAN -EN PROCESO"),
+    "contabilidad":      ("app: finanzas",         "34-CONTABILIDAD - EN DESARROLLO"),
+    "capacitacion":      ("app: capacitacion",     "37-CAPACITACIÓN SGI"),
+    "planoteca":         ("app: planoteca",        "33-APP PLANOTECA - OK"),
+    "correo":            ("app: correo",           "16-CORREO EMPRESA - OK/correo-src"),
+    "biblioteca":        ("app: biblioteca",       "17-BIBLIOTECA - OK"),
 }
 
 # Tres cajones. Nada se descarta: se separa, para que la persona mire poco y decida rapido.
@@ -72,6 +89,39 @@ def gh(args):
     return r.stdout
 
 
+def commits_de(repo, carpeta, fecha_desde):
+    """Los commits mas nuevos primero, con la misma forma que devuelve la API de GitHub."""
+    ruta = os.path.join(ARBOL, carpeta) if carpeta else None
+    if ruta and os.path.isdir(os.path.join(ruta, ".git")):
+        args = ["git", "-C", ruta, "log", "-n", "150", "--date=short",
+                "--format=%H%x1f%ad%x1f%s"]
+        if fecha_desde:
+            args.append("--since=%s" % fecha_desde)
+        r = subprocess.run(args, capture_output=True, encoding="utf-8", errors="replace")
+        if r.returncode != 0:
+            raise RuntimeError((r.stderr or "").strip()[:250])
+        salida = []
+        for linea in r.stdout.splitlines():
+            sha, fecha, msg = (linea.split("\x1f") + ["", ""])[:3]
+            salida.append({"sha": sha, "commit": {"message": msg, "author": {"date": fecha}}})
+        return salida
+    ruta_api = "repos/%s/%s/commits?per_page=100" % (DUENO, repo)
+    if fecha_desde:
+        ruta_api += "&since=%sT00:00:00Z" % fecha_desde
+    return json.loads(gh(["api", ruta_api]))
+
+
+def pendientes_anteriores():
+    """Lo que la corrida anterior propuso y nadie cargo. Sin esto, cada lunes pisaba al anterior
+    y la marca ya habia avanzado: lo no revisado se perdia."""
+    if not os.path.exists(SALIDA):
+        return ""
+    texto = io.open(SALIDA, encoding="utf-8").read()
+    if "## Probablemente sí son noticia" not in texto:
+        return ""
+    return texto[texto.index("## Probablemente sí son noticia"):].strip()
+
+
 def cargar_marca():
     if os.path.exists(MARCA):
         try:
@@ -89,6 +139,10 @@ def main():
         if i + 1 < len(sys.argv):
             fecha_desde = sys.argv[i + 1]
 
+    # --solo-marcar: el roadmap ya se puso al dia a mano. Se mueve la marca a lo ultimo de cada
+    # repositorio y se vacian las propuestas, para que el lunes siguiente no repita lo ya cargado.
+    solo_marcar = "--solo-marcar" in sys.argv
+
     marca = cargar_marca()
     nueva_marca = dict(marca)
 
@@ -104,12 +158,9 @@ def main():
     ruido = []
     nunca = []
 
-    for repo, etiqueta in REPOS.items():
-        ruta = "repos/%s/%s/commits?per_page=100" % (DUENO, repo)
-        if fecha_desde:
-            ruta += "&since=%sT00:00:00Z" % fecha_desde
+    for repo, (etiqueta, carpeta) in REPOS.items():
         try:
-            commits = json.loads(gh(["api", ruta]))
+            commits = commits_de(repo, carpeta, fecha_desde)
         except RuntimeError:
             continue
         if not commits:
@@ -117,6 +168,8 @@ def main():
 
         visto = marca.get(repo)
         nueva_marca[repo] = commits[0]["sha"]
+        if solo_marcar:
+            continue
 
         for c in commits:
             if visto and c["sha"] == visto:
@@ -148,7 +201,11 @@ def main():
     lineas.append("deuda técnica interna**. Varias de estas líneas no deben salir nunca.")
     lineas.append("")
 
-    if not noticias and not ruido and not nunca:
+    anteriores = "" if solo_marcar else pendientes_anteriores()
+
+    if solo_marcar:
+        lineas.append("Sin pendientes: el roadmap se puso al día el %s." % datetime.date.today().isoformat())
+    elif not noticias and not ruido and not nunca:
         lineas.append("Sin cambios nuevos desde la última revisión.")
     else:
         if noticias:
@@ -178,6 +235,14 @@ def main():
             lineas.append("No se listan. La regla del repositorio público las excluye por definición;")
             lineas.append("aparecen aquí solo como conteo, para que sepas que se miraron y se dejaron fuera.")
             lineas.append("")
+
+    if anteriores:
+        lineas.append("---")
+        lineas.append("")
+        lineas.append("# Sin cargar desde la corrida anterior")
+        lineas.append("")
+        lineas.append(anteriores)
+        lineas.append("")
 
     io.open(SALIDA, "w", encoding="utf-8", newline="\r\n").write("\n".join(lineas) + "\n")
     io.open(MARCA, "w", encoding="utf-8", newline="\n").write(

@@ -45,8 +45,12 @@ Cada app tiene icono y color propios, y se repiten en todas las vistas:
 | 📊 | Tablero DataMart | 📚 | Biblioteca de Informes |
 | 📓 | Bitácora de Obra | 🌎 | Consulta Geográfica |
 | ⏰ | Registro de Horarios | 💬 | Asistente |
-| 🚚 | Portal de Proveedores | 🏠 | Menú de entrada |
-| 📋 | Gestión de Proyectos | 🔧 | Plataforma (varias a la vez) |
+| 🚚 | Portal de Proveedores | 📧 | Consulta de Correo |
+| 📋 | Gestión de Proyectos | ⚙️ | Panel de Automatizaciones |
+| 🧮 | Finanzas | 🧾 | Cajas Menores |
+| 📐 | Planoteca | 🚦 | Seguridad Vial |
+| 🎓 | Capacitación | 🏛️ | Consulta RUES |
+| 🏠 | Menú de entrada | 🔧 | Plataforma (varias a la vez) |
 
 ---
 
@@ -61,7 +65,15 @@ Cada app tiene icono y color propios, y se repiten en todas las vistas:
 | **Gestión de Proyectos** | Seguimiento de proyectos y entregables | Dirección, coordinación |
 | **Biblioteca de Informes** | Informes publicados con enlace para compartir | Oficina |
 | **Consulta Geográfica** | Malla vial de Bogotá: verificación de CIV, vías y localidades | Obra, topografía |
-| **Asistente de consulta** | Consultas de datos y documentos por WhatsApp | Oficina, obra |
+| **Asistente de consulta** | Consultas de datos y documentos por WhatsApp, y cómo se hace algo en el ERP | Oficina, obra |
+| **Consulta de Correo** | La correspondencia de la empresa en un solo lugar | Control interno, compras |
+| **Panel de Automatizaciones** | Tareas del ERP que corren solas: facturas sin soporte, facturas recibidas, pagos, cartera, órdenes de compra | Contabilidad, tesorería, compras, control |
+| **Finanzas** | Contabilidad, tesorería e impuestos: vencimientos, cierre, conciliaciones | Área contable |
+| **Cajas Menores** | Cada caja menor, del escaneo de sus soportes al acta del ERP | Quien legaliza, control de presupuesto |
+| **Planoteca** | Los planos de cada obra con su revisión vigente | Obra, control documental |
+| **Seguridad Vial** | El plan de seguridad vial (PESV) de cada empresa: flota, conductores, preoperacional, indicadores | SST, maquinaria, conductores |
+| **Capacitación** | Inducción y cursos en video, con evaluación y diploma | Todo el personal |
+| **Consulta RUES** | Quién es un tercero según las cámaras de comercio, desde el asistente y desde Excel | Compras, contabilidad |
 
 Los enlaces de acceso están en el menú interno de la empresa; no se publican aquí.
 
@@ -136,7 +148,7 @@ Cada publicación queda con su nota de versión:
 ## Preguntas frecuentes
 
 **¿Por qué mi solicitud no tiene fecha?**
-Porque está en *Idea* o *En análisis*. La fecha aparece cuando pasa a *En curso*.
+Porque está *en evaluación* o *en backlog*. El trimestre aparece cuando se decide cuándo se hace.
 
 **¿Puedo saber en qué orden se hacen las cosas?**
 Sí: en el tablero, ordenado por prioridad. La prioridad la fija la dirección, no el

@@ -52,8 +52,8 @@ TRIMESTRES_DESDE = datetime.date(2026, 7, 1)
 TRIMESTRES_HASTA = datetime.date(2029, 1, 1)
 
 # Cada app con su color. Ojo: la paleta de un campo de tablero tiene solo OCHO colores
-# (GRAY BLUE GREEN YELLOW ORANGE RED PINK PURPLE) y hay once herramientas, asi que tres
-# parejas comparten color. En las ETIQUETAS del repo si hay un color distinto para cada una,
+# (GRAY BLUE GREEN YELLOW ORANGE RED PINK PURPLE) y hay dieciocho herramientas, asi que
+# varias comparten color; el icono es lo que las distingue. En las ETIQUETAS del repo si hay un color distinto para cada una,
 # porque ahi el color es un hex libre — ver configurar-repo.ps1.
 #   (nombre, etiqueta, color del tablero, nombre anterior de la opcion, descripcion)
 HERRAMIENTAS = [
@@ -66,6 +66,13 @@ HERRAMIENTAS = [
     ("🌎 Consulta Geográfica",    "app: geo",         "GREEN",  "Consulta Geográfica",    "Malla vial de Bogotá"),
     ("💬 Asistente",              "app: asistente",   "GRAY",   "Asistente",              "Consultas por WhatsApp"),
     ("📧 Consulta de Correo",     "app: correo",      "ORANGE", "Consulta de Correo",     "Correo de la empresa"),
+    ("⚙️ Panel de Automatizaciones", "app: automatizaciones", "YELLOW", "Panel de Automatizaciones", "Tareas del ERP que corren solas"),
+    ("🧮 Finanzas",               "app: finanzas",    "GREEN",  "Finanzas",               "Contabilidad, tesorería e impuestos"),
+    ("🧾 Cajas Menores",          "app: cajas",       "PINK",   "Cajas Menores",          "Del escaneo al acta del ERP"),
+    ("📐 Planoteca",              "app: planoteca",   "BLUE",   "Planoteca",              "Planos con su revisión vigente"),
+    ("🚦 Seguridad Vial",         "app: pesv",        "RED",    "Seguridad Vial",         "Plan de seguridad vial (PESV)"),
+    ("🎓 Capacitación",           "app: capacitacion","PURPLE", "Capacitación",           "Cursos en video con diploma"),
+    ("🏛️ Consulta RUES",          "app: rues",        "GRAY",   "Consulta RUES",          "Terceros en las cámaras de comercio"),
     ("🏠 Menú de entrada",        "app: menu",        "GRAY",   "Menú de entrada",        "Acceso a las herramientas"),
     ("🔧 Plataforma",             "app: plataforma",  "RED",    "Plataforma",             "Afecta a varias herramientas"),
 ]
